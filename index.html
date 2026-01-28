@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ישיבת תפארת עובדיה - לוח מודעות</title>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  overflow: hidden;
+  background: #000;
+  color: white;
+  direction: rtl;
+}
+
+/* כותרת קבועה של הישיבה */
+#mainHeader {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(to bottom, rgba(0, 31, 63, 0.95), rgba(0,0,0,0));
+  padding: 30px 0;
+  z-index: 1000;
+}
+
+#mainHeader h2 {
+  margin: 0;
+  font-size: 60px;
+  color: #ffd700;
+  text-shadow: 3px 3px 12px rgba(0,0,0,0.9);
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+/* תצוגת שעון ומידע יהודי */
+#topBar {
+  position: absolute;
+  top: 130px;
+  left: 40px;
+  text-align: right;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 25px 35px;
+  border-radius: 20px;
+  border-right: 8px solid #ffd700;
+  backdrop-filter: blur(5px);
+}
+
+#clock {
+  font-size: 75px;
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+}
+
+#hebrewDate {
+  font-size: 32px;
+  color: #ffd700;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+#parasha {
+  font-size: 26px;
+  color: #00d4ff;
+  font-weight: 500;
+}
+
+/* שקופיות */
+.slide {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle, #001f3f 0%, #000 100%);
+  text-align: center;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.slide h1 {
+  font-size: clamp(50px, 9vw, 95px);
+  margin-top: 120px;
+  margin-bottom: 30px;
+  color: #fff;
+  border-bottom: 4px solid #ffd700;
+  padding-bottom: 15px;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+}
+
+.slide p {
+  font-size: clamp(30px, 6vw, 60px);
+  line-height: 1.6;
+  max-width: 85%;
+  text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+}
+</style>
+</head>
+<body>
+
+<div id="mainHeader">
+  <h2>ישיבת תפארת עובדיה</h2>
+</div>
+
+<div id="topBar">
+  <div id="clock">00:00:00</div>
+  <div id="hebrewDate">טוען תאריך...</div>
+  <div id="parasha"></div>
+</div>
+
+<div id="slidesContainer"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
+<script>
+// עדכון שעון חי
+function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// משיכת מידע יהודי (תאריך ופרשה)
+async function getJewishInfo() {
+    try {
+        const response = await fetch('https://www.hebcal.com/etc/hdate-he.json');
+        const data = await response.json();
+        document.getElementById('hebrewDate').textContent = data.hebrew;
+        
+        // משיכת פרשת השבוע
+        const pResp = await fetch('https://www.hebcal.com/shabbat?cfg=json&m=0&lg=he&geo=none');
+        const pData = await pResp.json();
+        const parasha = pData.items.find(i => i.category === "parashat");
+        document.getElementById('parasha').textContent = parasha ? "פרשת " + parasha.hebrew : "";
+    } catch (e) {
+        console.log("Error loading dates");
+    }
+}
+getJewishInfo();
+setInterval(getJewishInfo, 3600000); // רענון פעם בשעה
+
+// קישור לגליון גוגל שלך
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUHNKYdGwmym273eeGxigpITLd1ugZ-_095S6-QOcfvESZJQHmAZ-QTbZ55nNxtbXFsT2vMFglehg/pub?gid=0&single=true&output=csv";
+const slidesContainer = document.getElementById("slidesContainer");
+let currentSlide = 0;
+
+function showSlide(index) {
+    const slides = document.getElementsByClassName("slide");
+    if (slides.length === 0) return;
+    for (let slide of slides) {
+        slide.style.
