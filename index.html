@@ -13,79 +13,106 @@
         color: white; direction: rtl;
         font-family: 'Assistant', sans-serif;
         overflow: hidden;
-        border: 15px solid #d4af37; /* מסגרת מוזהבת */
+        border: 15px solid #d4af37; /* מסגרת זהב יוקרתית */
         box-sizing: border-box;
         height: 100vh;
     }
 
+    /* כותרת הישיבה */
     #mainHeader {
         text-align: center;
         padding: 20px 0;
         border-bottom: 2px solid #d4af37;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.6);
     }
 
     #mainHeader h2 {
         margin: 0;
         font-family: 'Frank Ruhl Libre', serif;
-        font-size: 65px;
+        font-size: clamp(40px, 6vw, 65px);
         color: #ffd700;
-        text-shadow: 2px 2px 5px #000;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
     }
 
+    /* תיבת זמני היום - מנהג אור החיים */
     #sideInfo {
         position: absolute;
-        top: 130px;
+        top: 150px;
         right: 40px;
-        width: 300px;
-        background: rgba(255, 215, 0, 0.05);
-        padding: 20px;
-        border-radius: 10px;
+        width: 320px;
+        background: rgba(255, 215, 0, 0.07);
+        padding: 25px;
+        border-radius: 12px;
         border: 1px solid #d4af37;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    }
+
+    .zman-title {
+        text-align: center;
+        color: #ffd700;
+        font-weight: bold;
+        font-size: 28px;
+        margin-bottom: 15px;
+        text-decoration: underline;
     }
 
     .zman-item {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 10px;
-        font-size: 22px;
+        margin-bottom: 12px;
+        font-size: 24px;
         border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        padding-bottom: 5px;
     }
 
     .zman-time { color: #ffd700; font-weight: bold; }
 
+    /* שעון ותאריך עברי */
     #clockBox {
         position: absolute;
-        top: 130px;
+        top: 150px;
         left: 40px;
         text-align: center;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 20px;
+        border-radius: 15px;
     }
 
-    #clock { font-size: 80px; font-weight: bold; color: #fff; }
-    #heDate { font-size: 30px; color: #ffd700; }
+    #clock { font-size: 90px; font-weight: bold; color: #fff; line-height: 1; }
+    #heDate { font-size: 32px; color: #ffd700; margin-top: 10px; font-weight: bold; }
 
+    /* אזור המודעות המרכזי */
     #slidesContainer {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 60vh;
-        margin-top: 50px;
-        padding: 0 350px;
+        height: calc(100vh - 250px);
+        padding: 0 380px;
+        text-align: center;
     }
 
     .slide {
         display: none;
-        text-align: center;
-        animation: fadeIn 1.5s forwards;
+        animation: fadeIn 1.2s ease-in-out forwards;
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
     }
 
-    .slide h1 { font-size: 80px; color: #fff; margin-bottom: 20px; font-family: 'Frank Ruhl Libre', serif; }
-    .slide p { font-size: 45px; color: #e0e0e0; line-height: 1.4; }
+    .slide h1 { 
+        font-size: clamp(50px, 8vw, 90px); 
+        color: #fff; 
+        margin-bottom: 25px; 
+        font-family: 'Frank Ruhl Libre', serif;
+        text-shadow: 2px 2px 15px rgba(0,0,0,0.5);
+    }
+    .slide p { 
+        font-size: clamp(30px, 5vw, 55px); 
+        color: #e0e0e0; 
+        line-height: 1.5; 
+    }
 </style>
 </head>
 <body>
@@ -95,21 +122,26 @@
 </div>
 
 <div id="sideInfo">
-    <div style="text-align:center; color:#ffd700; font-weight:bold; font-size:24px; margin-bottom:15px;">זמני היום</div>
+    <div class="zman-title">זמני היום</div>
     <div id="zmanimList">טוען זמנים...</div>
 </div>
 
 <div id="clockBox">
     <div id="clock">00:00:00</div>
-    <div id="heDate">טוען...</div>
+    <div id="heDate">טוען תאריך...</div>
 </div>
 
-<div id="slidesContainer"></div>
+<div id="slidesContainer">
+    <div class="slide" style="display:block;">
+        <h1>ברוכים הבאים</h1>
+        <p>טוען מודעות מהאקסל...</p>
+    </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
 <script>
-    // שעון
+    // 1. שעון חי
     function updateClock() {
         const now = new Date();
         document.getElementById('clock').innerText = now.toLocaleTimeString('he-IL', {hour12: false});
@@ -117,46 +149,46 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // משיכת זמני היום ותאריך
-    async function fetchJewishData() {
+    // 2. זמני היום לפי מנהג ספרד/אור החיים
+    async function fetchZmanim() {
         try {
             // תאריך עברי
-            const hDateRes = await fetch('https://www.hebcal.com/etc/hdate-he.json');
-            const hData = await hDateRes.json();
+            const hRes = await fetch('https://www.hebcal.com/etc/hdate-he.json');
+            const hData = await hRes.json();
             document.getElementById('heDate').innerText = hData.hebrew;
 
-            // זמני היום (לפי ירושלים כברירת מחדל, ניתן לשינוי)
-            const zmanimRes = await fetch('https://www.hebcal.com/zmanim?cfg=json&city=IL-Jerusalem');
-            const zData = await zmanimRes.json();
-            const times = zData.times;
+            // זמנים (לפי ירושלים)
+            const zRes = await fetch('https://www.hebcal.com/zmanim?cfg=json&city=IL-Jerusalem');
+            const zData = await zRes.json();
+            const t = zData.times;
             
-            const list = document.getElementById('zmanimList');
-            list.innerHTML = `
-                <div class="zman-item"><span>הנץ החמה:</span> <span class="zman-time">${formatZman(times.sunrise)}</span></div>
-                <div class="zman-item"><span>סוף זמן ק"ש:</span> <span class="zman-time">${formatZman(times.sofaZmanShma)}</span></div>
-                <div class="zman-item"><span>סוף זמן תפילה:</span> <span class="zman-time">${formatZman(times.sofaZmanTfilla)}</span></div>
-                <div class="zman-item"><span>חצות היום:</span> <span class="zman-time">${formatZman(times.chatzot)}</span></div>
-                <div class="zman-item"><span>שקיעה:</span> <span class="zman-time">${formatZman(times.sunset)}</span></div>
+            document.getElementById('zmanimList').innerHTML = `
+                <div class="zman-item"><span>עלות השחר:</span> <span class="zman-time">${fmt(t.alotHaShachar)}</span></div>
+                <div class="zman-item"><span>הנץ החמה:</span> <span class="zman-time">${fmt(t.sunrise)}</span></div>
+                <div class="zman-item"><span>סוף זמן ק"ש:</span> <span class="zman-time">${fmt(t.sofaZmanShma)}</span></div>
+                <div class="zman-item"><span>סוף ז. תפילה:</span> <span class="zman-time">${fmt(t.sofaZmanTfilla)}</span></div>
+                <div class="zman-item"><span>חצות היום:</span> <span class="zman-time">${fmt(t.chatzot)}</span></div>
+                <div class="zman-item"><span>מנחה גדולה:</span> <span class="zman-time">${fmt(t.minchaGedola)}</span></div>
+                <div class="zman-item"><span>שקיעה:</span> <span class="zman-time">${fmt(t.sunset)}</span></div>
             `;
-        } catch (e) { console.error("Error fetching zmanim"); }
+        } catch (e) { document.getElementById('zmanimList').innerText = "שגיאת טעינה"; }
     }
+    function fmt(d) { return d ? new Date(d).toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'}) : '--:--'; }
+    fetchZmanim();
+    setInterval(fetchZmanim, 3600000);
 
-    function formatZman(dateStr) {
-        const d = new Date(dateStr);
-        return d.toLocaleTimeString('he-IL', {hour: '2-digit', minute:'2-digit'});
-    }
-    fetchJewishData();
-
-    // חיבור לאקסל עם Proxy
+    // 3. חיבור לאקסל (עם Proxy למניעת חסימות)
     const raw_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUHNKYdGwmym273eeGxigpITLd1ugZ-_095S6-QOcfvESZJQHmAZ-QTbZ55nNxtbXFsT2vMFglehg/pub?gid=0&single=true&output=csv";
     const CSV_URL = "https://api.allorigins.win/raw?url=" + encodeURIComponent(raw_url);
 
-    function loadContent() {
+    function loadExcel() {
         Papa.parse(CSV_URL, {
             download: true,
             complete: function(results) {
                 const data = results.data.slice(1).filter(r => r[0] || r[1]);
                 const container = document.getElementById("slidesContainer");
+                if (data.length === 0) return;
+                
                 container.innerHTML = "";
                 data.forEach(row => {
                     const div = document.createElement("div");
@@ -164,24 +196,23 @@
                     div.innerHTML = `<h1>${row[0] || ""}</h1><p>${row[1] || ""}</p>`;
                     container.appendChild(div);
                 });
-                startSlides();
+                startLoop();
             }
         });
     }
 
-    let current = 0;
-    function startSlides() {
+    let idx = 0;
+    function startLoop() {
         const slides = document.querySelectorAll(".slide");
-        if (slides.length === 0) return;
-        function show() {
+        function next() {
             slides.forEach(s => s.style.display = "none");
-            slides[current % slides.length].style.display = "block";
-            current++;
+            slides[idx % slides.length].style.display = "block";
+            idx++;
         }
-        show();
-        setInterval(show, 10000); // החלפה כל 10 שניות
+        next();
+        setInterval(next, 10000); // מעבר כל 10 שניות
     }
-    loadContent();
+    loadExcel();
 </script>
 </body>
 </html>
