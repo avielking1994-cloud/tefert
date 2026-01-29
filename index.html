@@ -9,14 +9,17 @@
 
         body {
             font-family: 'Assistant', sans-serif;
-            background: #050a0f;
-            background-image: radial-gradient(circle at center, #102030 0%, #050a0f 100%);
-            color: white; margin: 0; padding: 3vh 2vw; 
+            /* רקע תמונה יוקרתי עם שכבת הצללה כדי שהטקסט יישאר קריא */
+            background: linear-gradient(rgba(5, 10, 15, 0.85), rgba(5, 10, 15, 0.85)), 
+                        url('https://images.unsplash.com/photo-1605648916361-9bc12ad6a569?q=80&w=2070&auto=format&fit=crop'); 
+            background-size: cover;
+            background-position: center;
+            color: white; margin: 0; padding: 2vh 2vw; 
             display: flex; flex-direction: column; height: 100vh; overflow: hidden;
         }
 
         header {
-            background: linear-gradient(145deg, #1e3c72, #2a5298);
+            background: linear-gradient(145deg, rgba(30, 60, 114, 0.9), rgba(42, 82, 152, 0.9));
             padding: 0 30px; display: flex; justify-content: space-between; align-items: center;
             border-bottom: 4px solid #d4af37; border-radius: 15px 15px 0 0; height: 12vh;
         }
@@ -24,18 +27,18 @@
         .header-right h1 { margin: 0; font-size: 2.2rem; color: #d4af37; text-shadow: 2px 2px 8px rgba(0,0,0,0.5); }
         #clock { font-size: 3.5rem; font-weight: 800; color: #fff; }
 
-        main { flex-grow: 1; display: flex; gap: 15px; padding: 15px 0; height: 80vh; }
+        main { flex-grow: 1; display: flex; gap: 15px; padding: 15px 0; height: 75vh; }
 
-        /* חלוקה ל-3 טורים */
         .column { display: flex; flex-direction: column; gap: 15px; height: 100%; }
-        #col-right { width: 22%; } /* זמנים */
-        #col-center { width: 56%; } /* הודעות */
-        #col-left { width: 22%; } /* פרנסי היום */
+        #col-right { width: 22%; } 
+        #col-center { width: 56%; } 
+        #col-left { width: 22%; } 
 
         .section-box { 
-            background: rgba(255, 255, 255, 0.03); 
+            background: rgba(255, 255, 255, 0.05); 
             border: 2px solid rgba(212, 175, 55, 0.4); 
             border-radius: 12px; padding: 10px;
+            backdrop-filter: blur(5px);
         }
 
         .sidebar-title { 
@@ -44,35 +47,47 @@
         }
 
         .prayer-item { 
-            font-size: 1.2rem; padding: 6px; background: rgba(255, 255, 255, 0.07); 
+            font-size: 1.3rem; padding: 8px; background: rgba(255, 255, 255, 0.1); 
             border-radius: 6px; text-align: center; border-right: 4px solid #d4af37; margin-bottom: 5px;
+            font-weight: 600;
         }
 
         .zman-grid { display: grid; grid-template-columns: 1fr; gap: 5px; }
-        .zman-item { background: rgba(0,0,0,0.4); padding: 5px; border-radius: 6px; display: flex; justify-content: space-between; padding: 5px 10px; border: 1px solid rgba(212,175,55,0.2); }
-        .zman-label { color: #d4af37; font-size: 0.9rem; }
-        .zman-value { font-weight: 700; font-size: 1.1rem; }
+        .zman-item { background: rgba(0,0,0,0.5); padding: 8px; border-radius: 6px; display: flex; justify-content: space-between; border: 1px solid rgba(212,175,55,0.3); }
+        .zman-label { color: #d4af37; font-size: 1rem; }
+        .zman-value { font-weight: 700; font-size: 1.2rem; }
 
-        /* מרכז - הודעות */
         #message-card {
-            background: #fff; color: #050a0f; border-radius: 20px;
+            background: rgba(255, 255, 255, 0.95); color: #050a0f; border-radius: 20px;
             display: flex; flex-direction: column; padding: 30px; text-align: center;
             border: 6px solid #d4af37; justify-content: center; height: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        #msg-header { font-size: 2.5rem; color: #1e3c72; margin-bottom: 15px; font-weight: 800; border-bottom: 3px solid #d4af37; display: inline-block; }
-        #msg-body { font-weight: 600; line-height: 1.3; font-size: 3rem; }
+        #msg-header { font-size: 2.8rem; color: #1e3c72; margin-bottom: 15px; font-weight: 800; border-bottom: 3px solid #d4af37; display: inline-block; }
+        #msg-body { font-weight: 600; line-height: 1.3; font-size: 3.2rem; }
 
-        /* שמאל - פרנסי היום */
         .patron-box {
-            flex: 1; background: rgba(212, 175, 55, 0.1);
+            flex: 1; background: rgba(212, 175, 55, 0.15);
             border: 2px solid #d4af37; border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; padding: 10px;
+            text-align: center; padding: 10px; backdrop-filter: blur(5px);
         }
-        .patron-title { color: #d4af37; font-size: 1.2rem; font-weight: 800; text-decoration: underline; margin-bottom: 5px; }
-        .patron-name { color: #fff; font-size: 1.5rem; font-weight: 600; line-height: 1.2; }
+        .patron-title { color: #d4af37; font-size: 1.3rem; font-weight: 800; text-decoration: underline; margin-bottom: 5px; }
+        .patron-name { color: #fff; font-size: 1.6rem; font-weight: 600; text-shadow: 1px 1px 3px black; }
 
-        footer { height: 5vh; text-align: center; color: rgba(212, 175, 55, 0.7); font-size: 0.9rem; display: flex; align-items: center; justify-content: center; }
+        footer { 
+            height: 10vh; /* הגדלתי את גובה הפוטר */
+            text-align: center; 
+            color: #d4af37; 
+            font-size: 1.8rem; /* פונט גדול בהרבה */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 800;
+            text-shadow: 2px 2px 10px black;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -106,22 +121,23 @@
         <div id="col-left" class="column">
             <div class="patron-box">
                 <div class="patron-title">פרנס היום</div>
-                <div id="patron-day" class="patron-name">טוען...</div>
+                <div id="patron-day" class="patron-name">נדבת לב</div>
             </div>
             <div class="patron-box">
                 <div class="patron-title">פרנס השבוע</div>
-                <div id="patron-week" class="patron-name">טוען...</div>
+                <div id="patron-week" class="patron-name">נדבת לב</div>
             </div>
             <div class="patron-box">
                 <div class="patron-title">פרנס החודש</div>
-                <div id="patron-month" class="patron-name">טוען...</div>
+                <div id="patron-month" class="patron-name">נדבת לב</div>
             </div>
         </div>
     </main>
 
-    <footer>לעילוי נשמת עליזה בת אריאלה ע"ה</footer>
+    <footer>נתרם לעילוי נשמת עליזה בת אריאלה ע"ה</footer>
 
     <script>
+        // פונקציות ה-JavaScript נשארות זהות לגרסה הקודמת
         function updateDateTime() { 
             const now = new Date();
             document.getElementById('clock').textContent = now.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'}); 
@@ -210,7 +226,9 @@
                 h.textContent = item.title;
                 b.textContent = item.body;
                 let len = item.body.length;
-                b.style.fontSize = len < 30 ? "4.5rem" : len < 100 ? "3rem" : "1.8rem";
+                if (len < 30) b.style.fontSize = "4.5rem";
+                else if (len < 100) b.style.fontSize = "3rem";
+                else b.style.fontSize = "1.8rem";
                 b.style.opacity = 1;
                 currentIndex = (currentIndex + 1) % newsItems.length;
             }, 500);
