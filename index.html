@@ -5,160 +5,49 @@
     <title>לוח מודעות - תפארת עובדיה</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap');
-
         * { box-sizing: border-box; }
-
-        @keyframes pulse-glow {
-            0% { text-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
-            50% { text-shadow: 0 0 25px rgba(212, 175, 55, 0.7), 0 0 40px rgba(212, 175, 55, 0.4); }
-            100% { text-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
-        }
 
         body {
             font-family: 'Assistant', sans-serif;
-            background-color: #050a0f;
+            background: #050a0f;
             background-image: radial-gradient(circle at center, #102030 0%, #050a0f 100%);
-            color: white;
-            margin: 0;
-            padding: 2vh; 
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+            color: white; margin: 0; padding: 2vh; 
+            display: flex; flex-direction: column; height: 100vh; overflow: hidden;
         }
 
         header {
             background: linear-gradient(145deg, #1e3c72, #2a5298);
-            padding: 0 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 5px solid #d4af37;
-            border-radius: 20px 20px 0 0;
-            height: 15vh;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            padding: 0 40px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 5px solid #d4af37; border-radius: 20px 20px 0 0; height: 15vh;
         }
 
-        .header-right h1 { 
-            margin: 0; 
-            font-size: 3rem; 
-            color: #d4af37; 
-            animation: pulse-glow 3s infinite ease-in-out;
-        }
+        .header-right h1 { margin: 0; font-size: 3rem; color: #d4af37; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+        #clock { font-size: 4.5rem; font-weight: 800; }
 
-        #date-display { font-size: 1.5rem; color: #e0e0e0; }
-        
-        #clock { 
-            font-size: 4.8rem; 
-            font-weight: 800; 
-            color: #fff; 
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        }
+        main { flex-grow: 1; display: flex; gap: 20px; padding: 20px 0; height: 75vh; }
 
-        main {
-            flex-grow: 1;
-            display: flex;
-            gap: 20px;
-            padding: 20px 0;
-            height: 75vh;
-            min-height: 0;
-        }
-
-        #sidebar {
-            width: 32%;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .section-box {
-            background: rgba(255, 255, 255, 0.03);
-            border: 2px solid rgba(212, 175, 55, 0.5);
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
+        #sidebar { width: 32%; display: flex; flex-direction: column; gap: 15px; }
+        .section-box { background: rgba(255, 255, 255, 0.03); border: 2px solid rgba(212, 175, 55, 0.5); border-radius: 15px; padding: 15px; }
         #community-section { flex-grow: 1; overflow: hidden; }
-        #zmanim-section { background: rgba(212, 175, 55, 0.1); border-color: #d4af37; }
 
-        .sidebar-title {
-            font-size: 1.8rem;
-            color: #d4af37;
-            text-align: center;
-            margin-bottom: 12px;
-            border-bottom: 2px solid #d4af37;
-            padding-bottom: 8px;
-            font-weight: 800;
-        }
+        .sidebar-title { font-size: 1.8rem; color: #d4af37; text-align: center; margin-bottom: 12px; border-bottom: 2px solid #d4af37; font-weight: 800; }
+        .prayer-item { font-size: 1.6rem; margin-bottom: 8px; padding: 10px; background: rgba(255, 255, 255, 0.07); border-radius: 8px; text-align: center; border-right: 5px solid #d4af37; font-weight: 600; }
 
-        .prayer-item {
-            font-size: 1.6rem;
-            margin-bottom: 8px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.07);
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 600;
-            border-right: 5px solid #d4af37;
-        }
-
-        .zman-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-        .zman-item {
-            background: rgba(0,0,0,0.4);
-            padding: 10px;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-        }
-
-        .zman-label { color: #d4af37; font-size: 1rem; margin-bottom: 3px; font-weight: 600; }
-        .zman-value { font-weight: 800; font-size: 1.5rem; color: #fff; }
+        .zman-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .zman-item { background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; border: 1px solid rgba(212, 175, 55, 0.2); }
+        .zman-label { color: #d4af37; font-size: 0.9rem; font-weight: 600; }
+        .zman-value { font-weight: 800; font-size: 1.4rem; }
 
         #message-card {
-            flex-grow: 1;
-            background: #fff;
-            color: #050a0f;
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            padding: 50px;
-            text-align: center;
-            border: 6px solid #d4af37;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-            justify-content: center;
+            flex-grow: 1; background: #fff; color: #050a0f; border-radius: 20px;
+            display: flex; flex-direction: column; padding: 40px; text-align: center;
+            border: 6px solid #d4af37; justify-content: center; box-shadow: 0 15px 40px rgba(0,0,0,0.8);
         }
 
-        #msg-header {
-            font-size: 3.2rem;
-            color: #1e3c72;
-            margin-bottom: 25px;
-            font-weight: 800;
-            text-decoration: underline #d4af37 4px;
-        }
+        #msg-header { font-size: 3.2rem; color: #1e3c72; margin-bottom: 20px; font-weight: 800; border-bottom: 3px solid #d4af37; display: inline-block; padding-bottom: 5px; }
+        #msg-body { font-weight: 600; line-height: 1.4; transition: opacity 0.5s; }
 
-        #msg-body { 
-            font-weight: 600; 
-            line-height: 1.4;
-            transition: opacity 0.5s ease-in-out;
-        }
-
-        footer { 
-            height: 5vh;
-            text-align: center; 
-            color: rgba(212, 175, 55, 0.8); 
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        footer { height: 5vh; text-align: center; color: #d4af37; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -177,15 +66,13 @@
                 <div class="sidebar-title">זמני הישיבה</div>
                 <div id="prayers-list"></div>
             </div>
-            
             <div id="zmanim-section" class="section-box">
-                <div class="sidebar-title">זמני היום - בני ברק</div>
+                <div class="sidebar-title" style="font-size: 1.2rem;">זמני היום - בני ברק</div>
                 <div id="zmanim-list" class="zman-grid"></div>
             </div>
         </div>
-
         <div id="message-card">
-            <div id="msg-header"></div>
+            <div><span id="msg-header"></span></div>
             <div id="msg-body">טוען הודעות...</div>
         </div>
     </main>
@@ -205,42 +92,55 @@
                 const response = await fetch('https://www.hebcal.com/zmanim?cfg=json&city=IL-Bnei+Brak');
                 const data = await response.json();
                 const t = data.times;
-                
                 document.getElementById('zmanim-list').innerHTML = `
-                    <div class="zman-item"><span class="zman-label">נץ החמה</span><span class="zman-value">${formatT(t.sunrise)}</span></div>
+                    <div class="zman-item"><span class="zman-label">נץ</span><span class="zman-value">${formatT(t.sunrise)}</span></div>
                     <div class="zman-item"><span class="zman-label">חצות</span><span class="zman-value">${formatT(t.chatzot)}</span></div>
                     <div class="zman-item"><span class="zman-label">שקיעה</span><span class="zman-value">${formatT(t.sunset)}</span></div>
                 `;
             } catch (e) { }
         }
-
         function formatT(iso) { return new Date(iso).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }); }
 
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUHNKYdGwmym273eeGxigpITLd1ugZ-_095S6-QOcfvESZJQHmAZ-QTbZ55nNxtbXFsT2vMFglehg/pub?gid=0&single=true&output=csv';
         let newsItems = [];
         let currentIndex = 0;
 
+        function parseCSV(text) {
+            let lines = text.split(/\r?\n/);
+            return lines.map(line => {
+                let result = [];
+                let current = "";
+                let inQuotes = false;
+                for (let i = 0; i < line.length; i++) {
+                    let char = line[i];
+                    if (char === '"' && line[i+1] === '"') { current += '"'; i++; }
+                    else if (char === '"') { inQuotes = !inQuotes; }
+                    else if (char === ',' && !inQuotes) { result.push(current); current = ""; }
+                    else { current += char; }
+                }
+                result.push(current);
+                return result;
+            });
+        }
+
         async function loadSheets() {
             try {
                 const response = await fetch(csvUrl + '&cache=' + new Date().getTime());
                 const data = await response.text();
-                const lines = data.split('\n').filter(l => l.trim().length > 2);
+                const rows = parseCSV(data);
                 
                 let prayersHtml = "";
                 let tempNews = [];
 
-                lines.forEach((line, index) => {
-                    if (index === 0) return;
-                    // ניקוי יסודי של פסיקים בתחילת השורה עבור שחרית/מנחה/ערבית
-                    let cleanLine = line.replace(/^[,\s"']+|[,\s"']+$/g, '').trim();
+                rows.forEach((row, index) => {
+                    if (index === 0 || row.length < 1) return;
+                    let colA = (row[0] || "").trim();
+                    let colB = (row[1] || "").trim();
                     
-                    if (cleanLine.includes("שחרית") || cleanLine.includes("מנחה") || cleanLine.includes("ערבית")) {
-                        prayersHtml += `<div class="prayer-item">${cleanLine}</div>`;
-                    } else {
-                        let parts = cleanLine.split(',');
-                        let title = parts[0]?.trim() || "";
-                        let body = parts.slice(1).join(' ').trim() || "";
-                        if (title || body) tempNews.push({ title, body });
+                    if (colA.includes("שחרית") || colA.includes("מנחה") || colA.includes("ערבית")) {
+                        prayersHtml += `<div class="prayer-item">${colA} ${colB}</div>`;
+                    } else if (colA || colB) {
+                        tempNews.push({ title: colA, body: colB });
                     }
                 });
 
@@ -260,7 +160,7 @@
                 h.textContent = item.title;
                 b.textContent = item.body;
                 let len = item.body.length;
-                b.style.fontSize = len < 30 ? "5.5rem" : len < 100 ? "3.8rem" : "2.2rem";
+                b.style.fontSize = len < 30 ? "5.5rem" : len < 100 ? "3.5rem" : "2.2rem";
                 b.style.opacity = 1;
                 currentIndex = (currentIndex + 1) % newsItems.length;
             }, 500);
