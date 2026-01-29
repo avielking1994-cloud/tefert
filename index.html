@@ -9,7 +9,7 @@
             background-color: #0c0c0c;
             color: white;
             margin: 0;
-            padding: 20px; /* שולי ביטחון למסך הסטרימר */
+            padding: 40px; /* שולי ביטחון רחבים למסכי טלוויזיה */
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -19,7 +19,7 @@
 
         header {
             background: linear-gradient(90deg, #16222a, #3a6073);
-            padding: 10px 30px;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -28,48 +28,51 @@
         }
 
         .header-right h1 { margin: 0; font-size: 2.2rem; color: #d4af37; }
-        #clock { font-size: 2.8rem; font-weight: bold; }
+        #hebrew-date { font-size: 1.4rem; color: #ffffff; font-weight: bold; margin-top: 5px; }
+        #clock { font-size: 3rem; font-weight: bold; }
 
         main {
             flex-grow: 1;
             display: flex;
-            gap: 15px;
-            padding: 15px 0;
+            gap: 20px;
+            padding: 20px 0;
             background: radial-gradient(circle, #1b2735 0%, #090a0f 100%);
             box-sizing: border-box;
-            min-height: 0; /* מונע דחיפה של ה-Footer */
+            min-height: 0;
         }
 
-        /* מלבן זמני תפילה */
+        /* מלבן זמני תפילה קבוע */
         #prayers-sidebar {
-            width: 30%;
+            width: 32%;
             background: rgba(255, 255, 255, 0.08);
             border: 2px solid #d4af37;
             border-radius: 15px;
-            padding: 15px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
         .sidebar-title {
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: #d4af37;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             border-bottom: 2px solid #d4af37;
+            padding-bottom: 5px;
         }
 
         .prayer-item {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            padding: 8px;
-            background: rgba(212, 175, 55, 0.1);
-            border-radius: 8px;
+            font-size: 1.7rem;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: rgba(212, 175, 55, 0.15);
+            border-radius: 10px;
             text-align: center;
+            border: 1px solid rgba(212, 175, 55, 0.3);
         }
 
-        /* מלבן מודעות מתחלפות - מקובע */
+        /* מלבן מודעות מתחלפות */
         #message-card {
             flex-grow: 1;
             background: rgba(255, 255, 255, 0.98);
@@ -79,18 +82,18 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 30px;
+            padding: 40px;
             text-align: center;
             border: 4px solid #d4af37;
             box-sizing: border-box;
-            height: 100%; /* מקבע את הגובה */
-            overflow: hidden; /* מונע מהתוכן להרחיב את הריבוע */
+            height: 100%;
+            overflow: hidden;
         }
 
         #msg-header {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: #3a6073;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-decoration: underline;
             font-weight: bold;
         }
@@ -105,7 +108,7 @@
 
         footer { 
             background: #000; 
-            padding: 8px; 
+            padding: 15px; 
             text-align: center; 
             color: #d4af37; 
             font-size: 1.3rem; 
@@ -119,37 +122,45 @@
     <header>
         <div class="header-right">
             <h1>ישיבת תפארת עובדיה</h1>
-            <div id="hebrew-date" style="font-size: 1.2rem; color: #fff;">טוען...</div>
+            <div id="hebrew-date">טוען תאריך...</div>
         </div>
         <div id="clock">00:00:00</div>
     </header>
 
     <main>
         <div id="prayers-sidebar">
-            <div class="sidebar-title">זמני תפילה יום חול</div>
+            <div class="sidebar-title">זמני תפילה</div>
             <div id="prayers-list"></div>
         </div>
         <div id="message-card">
             <div id="msg-header"></div>
-            <p id="msg-body">טוען...</p>
+            <p id="msg-body">טוען הודעות...</p>
         </div>
     </main>
 
     <footer>כל הזכויות שמורות לאביאל חכמון | הלוח נתרם לעילוי נשמת עליזה בת אריאלה</footer>
 
     <script>
-        function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('he-IL'); }
-        setInterval(updateClock, 1000); updateClock();
-
-        async function fetchHebrewDate() {
-            try {
-                const res = await fetch('https://www.hebcal.com/etc/hdate-he.json');
-                const data = await res.json();
-                document.getElementById('hebrew-date').textContent = data.hebrew;
-            } catch (e) {}
+        // 1. שעון ותאריך עברי פנימי (ללא תלות באתר חיצוני)
+        function updateClock() { 
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString('he-IL'); 
         }
-        fetchHebrewDate();
+        setInterval(updateClock, 1000); 
+        updateClock();
 
+        function getHebrewDate() {
+            try {
+                const options = { calendar: 'hebrew', day: 'numeric', month: 'long', year: 'numeric' };
+                const hebDate = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', options).format(new Date());
+                document.getElementById('hebrew-date').textContent = hebDate;
+            } catch (e) {
+                document.getElementById('hebrew-date').textContent = "";
+            }
+        }
+        getHebrewDate();
+
+        // 2. ניהול נתונים מהגוגל שיטס
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUHNKYdGwmym273eeGxigpITLd1ugZ-_095S6-QOcfvESZJQHmAZ-QTbZ55nNxtbXFsT2vMFglehg/pub?gid=0&single=true&output=csv';
         
         let newsItems = [];
@@ -165,12 +176,16 @@
                 let tempNews = [];
 
                 lines.forEach((line, index) => {
-                    if (index === 0) return;
+                    if (index === 0) return; // דלוג על כותרות הטבלה
+                    
                     let cleanLine = line.replace(/^,+|,+$/g, '').replace(/"/g, '').trim();
                     
+                    // זיהוי שורות תפילה לצד ימין
                     if (cleanLine.includes("שחרית") || cleanLine.includes("מנחה") || cleanLine.includes("ערבית")) {
-                        prayersHtml += `<div class="prayer-item">${cleanLine.replace(/^,/, '').trim()}</div>`;
+                        let prayerText = cleanLine.replace(/^,/, '').trim();
+                        prayersHtml += `<div class="prayer-item">${prayerText}</div>`;
                     } 
+                    // זיהוי הודעות לצד שמאל (מתעלם מכותרות טכניות)
                     else if (!cleanLine.includes("TitleText") && !cleanLine.includes("זמני תפילה")) {
                         let parts = cleanLine.split(',');
                         let title = parts[0] ? parts[0].trim() : "";
@@ -182,9 +197,10 @@
                 document.getElementById('prayers-list').innerHTML = prayersHtml;
                 newsItems = tempNews;
                 if (newsItems.length > 0 && currentIndex === 0) showNext();
-            } catch (e) {}
+            } catch (e) { console.log("Error loading sheets"); }
         }
 
+        // 3. החלפת הודעות עם פונט דינמי
         function showNext() {
             if (newsItems.length > 0) {
                 const headerEl = document.getElementById('msg-header');
@@ -196,24 +212,23 @@
                     headerEl.textContent = item.title;
                     bodyEl.textContent = item.body;
                     
-                    // חישוב פונט דינמי (מתאים את עצמו לפי אורך הטקסט)
-                    let textLength = item.body.length;
-                    let fontSize;
-                    if (textLength < 20) fontSize = "5rem";
-                    else if (textLength < 50) fontSize = "3.8rem";
-                    else if (textLength < 100) fontSize = "2.8rem";
-                    else fontSize = "2.2rem";
+                    // התאמת גודל הטקסט למניעת חריגה
+                    let len = item.body.length;
+                    if (len < 25) bodyEl.style.fontSize = "5rem";
+                    else if (len < 60) bodyEl.style.fontSize = "3.5rem";
+                    else if (len < 120) bodyEl.style.fontSize = "2.5rem";
+                    else bodyEl.style.fontSize = "1.8rem";
                     
-                    bodyEl.style.fontSize = fontSize;
                     bodyEl.style.opacity = 1;
                     currentIndex = (currentIndex + 1) % newsItems.length;
                 }, 500);
             }
         }
 
+        // הפעלה ראשונית ורענון אוטומטי
         loadSheets();
-        setInterval(loadSheets, 60000);
-        setInterval(showNext, 10000);
+        setInterval(loadSheets, 60000); // רענון מהאקסל כל דקה
+        setInterval(showNext, 12000); // החלפת הודעה כל 12 שניות
     </script>
 </body>
 </html>
