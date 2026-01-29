@@ -9,90 +9,109 @@
             background-color: #0c0c0c;
             color: white;
             margin: 0;
-            padding: 0;
+            padding: 20px; /* שולי ביטחון למסך הסטרימר */
             overflow: hidden;
             display: flex;
             flex-direction: column;
             height: 100vh;
+            box-sizing: border-box;
         }
 
         header {
             background: linear-gradient(90deg, #16222a, #3a6073);
-            padding: 15px 40px;
+            padding: 10px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 4px solid #d4af37;
+            border-radius: 15px 15px 0 0;
         }
 
-        .header-right h1 { margin: 0; font-size: 2.5rem; color: #d4af37; }
-        #clock { font-size: 3rem; font-weight: bold; }
+        .header-right h1 { margin: 0; font-size: 2.2rem; color: #d4af37; }
+        #clock { font-size: 2.8rem; font-weight: bold; }
 
         main {
             flex-grow: 1;
             display: flex;
-            gap: 20px;
-            padding: 20px;
+            gap: 15px;
+            padding: 15px 0;
             background: radial-gradient(circle, #1b2735 0%, #090a0f 100%);
             box-sizing: border-box;
+            min-height: 0; /* מונע דחיפה של ה-Footer */
         }
 
-        /* מלבן זמני תפילה (ימין) */
+        /* מלבן זמני תפילה */
         #prayers-sidebar {
-            width: 35%;
+            width: 30%;
             background: rgba(255, 255, 255, 0.08);
             border: 2px solid #d4af37;
-            border-radius: 20px;
-            padding: 20px;
+            border-radius: 15px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         .sidebar-title {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             color: #d4af37;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             border-bottom: 2px solid #d4af37;
-            padding-bottom: 10px;
         }
 
         .prayer-item {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            padding: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            padding: 8px;
             background: rgba(212, 175, 55, 0.1);
-            border-radius: 10px;
+            border-radius: 8px;
             text-align: center;
-            border: 1px solid rgba(212, 175, 55, 0.3);
         }
 
-        /* מלבן מודעות מתחלפות (שמאל) */
+        /* מלבן מודעות מתחלפות - מקובע */
         #message-card {
             flex-grow: 1;
             background: rgba(255, 255, 255, 0.98);
             color: #000;
-            border-radius: 20px;
+            border-radius: 15px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 40px;
+            padding: 30px;
             text-align: center;
             border: 4px solid #d4af37;
+            box-sizing: border-box;
+            height: 100%; /* מקבע את הגובה */
+            overflow: hidden; /* מונע מהתוכן להרחיב את הריבוע */
         }
 
         #msg-header {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #3a6073;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-decoration: underline;
             font-weight: bold;
         }
 
-        #msg-body { font-weight: bold; transition: opacity 0.5s ease; margin: 0; }
+        #msg-body { 
+            font-weight: bold; 
+            transition: opacity 0.5s ease; 
+            margin: 0;
+            width: 100%;
+            word-wrap: break-word;
+        }
 
-        footer { background: #000; padding: 10px; text-align: center; color: #d4af37; font-size: 1.2rem; }
+        footer { 
+            background: #000; 
+            padding: 8px; 
+            text-align: center; 
+            color: #d4af37; 
+            font-size: 1.3rem; 
+            border-radius: 0 0 15px 15px;
+            border-top: 1px solid #333;
+        }
     </style>
 </head>
 <body>
@@ -100,7 +119,7 @@
     <header>
         <div class="header-right">
             <h1>ישיבת תפארת עובדיה</h1>
-            <div id="hebrew-date" style="font-size: 1.3rem; color: #fff;">טוען תאריך...</div>
+            <div id="hebrew-date" style="font-size: 1.2rem; color: #fff;">טוען...</div>
         </div>
         <div id="clock">00:00:00</div>
     </header>
@@ -112,11 +131,11 @@
         </div>
         <div id="message-card">
             <div id="msg-header"></div>
-            <p id="msg-body">טוען הודעות...</p>
+            <p id="msg-body">טוען...</p>
         </div>
     </main>
 
-    <footer>כל הזכויות שמורות לאביאל חכמון | הלוח נתרם לעילוי נשמת עליזה בת אריאלה </footer>
+    <footer>"והגית בו יומם ולילה" | לוח מודעות אלקטרוני</footer>
 
     <script>
         function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('he-IL'); }
@@ -140,39 +159,28 @@
             try {
                 const response = await fetch(csvUrl + '&cache=' + new Date().getTime());
                 const data = await response.text();
-                
                 const lines = data.split('\n').filter(l => l.trim().length > 2);
                 
                 let prayersHtml = "";
                 let tempNews = [];
 
                 lines.forEach((line, index) => {
-                    if (index === 0) return; // דילוג על כותרת הטבלה
-
-                    // ניקוי פסיקים מיותרים בהתחלה ובסוף וגרשיים
+                    if (index === 0) return;
                     let cleanLine = line.replace(/^,+|,+$/g, '').replace(/"/g, '').trim();
                     
-                    // זיהוי אם זו שורת תפילה
                     if (cleanLine.includes("שחרית") || cleanLine.includes("מנחה") || cleanLine.includes("ערבית")) {
-                        // הסרת פסיקים פנימיים אם נשארו בתחילת המילה
-                        let prayerText = cleanLine.replace(/^,/, '').trim();
-                        prayersHtml += `<div class="prayer-item">${prayerText}</div>`;
+                        prayersHtml += `<div class="prayer-item">${cleanLine.replace(/^,/, '').trim()}</div>`;
                     } 
                     else if (!cleanLine.includes("TitleText") && !cleanLine.includes("זמני תפילה")) {
-                        // הפרדה בין כותרת לתוכן במודעות (פיצול לפי הפסיק הראשון)
                         let parts = cleanLine.split(',');
                         let title = parts[0] ? parts[0].trim() : "";
                         let body = parts.slice(1).join(' ').replace(/^,/, '').trim();
-                        
-                        if (title || body) {
-                            tempNews.push({ title, body });
-                        }
+                        if (title || body) tempNews.push({ title, body });
                     }
                 });
 
-                document.getElementById('prayers-list').innerHTML = prayersHtml || "מעדכן זמנים...";
+                document.getElementById('prayers-list').innerHTML = prayersHtml;
                 newsItems = tempNews;
-
                 if (newsItems.length > 0 && currentIndex === 0) showNext();
             } catch (e) {}
         }
@@ -183,17 +191,21 @@
                 const bodyEl = document.getElementById('msg-body');
                 
                 bodyEl.style.opacity = 0;
-                headerEl.style.opacity = 0;
-
                 setTimeout(() => {
                     const item = newsItems[currentIndex];
                     headerEl.textContent = item.title;
                     bodyEl.textContent = item.body;
                     
-                    bodyEl.style.fontSize = item.body.length > 40 ? "3.2rem" : "5.5rem";
+                    // חישוב פונט דינמי (מתאים את עצמו לפי אורך הטקסט)
+                    let textLength = item.body.length;
+                    let fontSize;
+                    if (textLength < 20) fontSize = "5rem";
+                    else if (textLength < 50) fontSize = "3.8rem";
+                    else if (textLength < 100) fontSize = "2.8rem";
+                    else fontSize = "2.2rem";
                     
+                    bodyEl.style.fontSize = fontSize;
                     bodyEl.style.opacity = 1;
-                    headerEl.style.opacity = 1;
                     currentIndex = (currentIndex + 1) % newsItems.length;
                 }, 500);
             }
