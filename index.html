@@ -37,6 +37,7 @@
             font-size: 4.5rem;
             font-weight: bold;
             color: #ffffff;
+            line-height: 1;
         }
 
         main {
@@ -45,6 +46,7 @@
             justify-content: center;
             align-items: center;
             background: radial-gradient(circle, #1b2735 0%, #090a0f 100%);
+            padding: 30px;
         }
 
         #message-card {
@@ -65,6 +67,8 @@
             font-size: 5rem;
             font-weight: bold;
             margin: 0;
+            padding: 20px;
+            white-space: pre-wrap; /* שומר על ירידת שורות אם יש */
         }
 
         footer {
@@ -82,7 +86,7 @@
     <header>
         <div class="header-right">
             <h1>ישיבת תפארת עובדיה</h1>
-            <div id="hebrew-date" style="font-size: 1.5rem; color: #fff;">טוען תאריך...</div>
+            <div id="hebrew-date" style="font-size: 1.5rem; color: #fff; margin-top: 10px;">טוען תאריך...</div>
         </div>
         <div class="header-left">
             <div id="clock">00:00:00</div>
@@ -91,7 +95,7 @@
 
     <main>
         <div id="message-card">
-            <p id="message-text">טוען הודעות...</p>
+            <p id="message-text">טוען הודעות מהמערכת...</p>
         </div>
     </main>
 
@@ -100,12 +104,14 @@
     </footer>
 
     <script>
+        // 1. שעון
         function updateClock() {
             document.getElementById('clock').textContent = new Date().toLocaleTimeString('he-IL');
         }
         setInterval(updateClock, 1000);
         updateClock();
 
+        // 2. תאריך עברי
         async function fetchHebrewDate() {
             try {
                 const res = await fetch('https://www.hebcal.com/etc/hdate-he.json');
@@ -115,29 +121,35 @@
         }
         fetchHebrewDate();
 
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT16y6S3K0yH2YqKIdB6Dq9mYy_Yy3-x-O_N_p2W1W_o9x-X_Z-Z-Z/pub?output=csv'; 
+        // 3. משיכת הודעות מהקישור שלך
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUHNKYdGwmym273eeGxigpITLd1ugZ-_095S6-QOcfvESZJQHmAZ-QTbZ55nNxtbXFsT2vMFglehg/pub?gid=0&single=true&output=csv'; 
         
-        let messages = ["ברוכים הבאים"];
+        let messages = [];
         let index = 0;
 
         async function loadSheets() {
             try {
-                const response = await fetch(csvUrl);
+                // מוסיפים מספר אקראי בסוף הקישור כדי למנוע מהדפדפן לשמור גרסה ישנה
+                const response = await fetch(csvUrl + '&cache_buster=' + new Date().getTime());
                 const data = await response.text();
-                messages = data.split('\n').map(m => m.trim()).filter(m => m !== "");
-            } catch (e) { console.error("Sheet error"); }
+                
+                // מנקה שורות ריקות ומוריד גרשיים אם גוגל הוסיף
+                messages = data.split('\n')
+                               .map(m => m.replace(/"/g, '').trim())
+                               .filter(m => m !== "");
+
+                // אם יש שורת כותרת בטבלה, אפשר להוריד אותה (אופציונלי):
+                // messages.shift(); 
+
+                if (messages.length > 0 && index === 0) {
+                    showNextMessage();
+                }
+            } catch (e) { 
+                console.error("Sheet error", e);
+                document.getElementById('message-text').textContent = "ממתין לעדכון נתונים...";
+            }
         }
 
         function showNextMessage() {
             if (messages.length > 0) {
-                document.getElementById('message-text').textContent = messages[index];
-                index = (index + 1) % messages.length;
-            }
-        }
-
-        loadSheets();
-        setInterval(loadSheets, 60000);
-        setInterval(showNextMessage, 5000);
-    </script>
-</body>
-</html>
+                const msg
