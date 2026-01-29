@@ -23,39 +23,29 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 4px solid #d4af37;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
         }
 
-        .header-right h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            color: #d4af37;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-        }
-
-        #clock {
-            font-size: 3rem;
-            font-weight: bold;
-        }
+        .header-right h1 { margin: 0; font-size: 2.5rem; color: #d4af37; }
+        #clock { font-size: 3rem; font-weight: bold; }
 
         main {
             flex-grow: 1;
             display: flex;
-            gap: 25px;
-            padding: 25px;
+            gap: 20px;
+            padding: 20px;
             background: radial-gradient(circle, #1b2735 0%, #090a0f 100%);
             box-sizing: border-box;
         }
 
         /* מלבן זמני תפילה (ימין) */
         #prayers-sidebar {
-            width: 30%;
-            background: rgba(255, 255, 255, 0.07);
+            width: 35%;
+            background: rgba(255, 255, 255, 0.08);
             border: 2px solid #d4af37;
             border-radius: 20px;
-            padding: 25px;
-            box-sizing: border-box;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar-title {
@@ -65,14 +55,15 @@
             margin-bottom: 20px;
             border-bottom: 2px solid #d4af37;
             padding-bottom: 10px;
-            font-weight: bold;
         }
 
-        #prayers-list {
-            font-size: 1.9rem;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            color: #ffffff;
+        .prayer-item {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 10px;
+            text-align: center;
         }
 
         /* מלבן מודעות מתחלפות (שמאל) */
@@ -82,35 +73,16 @@
             color: #000;
             border-radius: 20px;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            border: 4px solid #d4af37;
             padding: 40px;
             text-align: center;
+            border: 4px solid #d4af37;
         }
 
-        #msg-title {
-            font-size: 2.5rem;
-            color: #3a6073;
-            margin-bottom: 20px;
-            text-decoration: underline;
-        }
+        #msg-body { font-weight: bold; transition: opacity 0.5s ease; }
 
-        #msg-body {
-            font-weight: bold;
-            margin: 0;
-            transition: opacity 0.6s ease-in-out;
-        }
-
-        footer {
-            background: #000;
-            padding: 10px;
-            text-align: center;
-            font-size: 1.4rem;
-            color: #d4af37;
-        }
+        footer { background: #000; padding: 10px; text-align: center; color: #d4af37; font-size: 1.2rem; }
     </style>
 </head>
 <body>
@@ -126,18 +98,14 @@
     <main>
         <div id="prayers-sidebar">
             <div class="sidebar-title">זמני תפילה</div>
-            <div id="prayers-list">טוען זמנים...</div>
+            <div id="prayers-list"></div>
         </div>
-
         <div id="message-card">
-            <div id="msg-title"></div>
-            <p id="msg-body">טוען מודעות...</p>
+            <p id="msg-body">טוען הודעות...</p>
         </div>
     </main>
 
-    <footer>
-        "והגית בו יומם ולילה" | עליזה בת אריאלה
-    </footer>
+    <footer>"והגית בו יומם ולילה"</footer>
 
     <script>
         function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('he-IL'); }
@@ -161,25 +129,26 @@
             try {
                 const response = await fetch(csvUrl + '&cache=' + new Date().getTime());
                 const data = await response.text();
-                const rows = data.split('\n').map(row => row.split(',').map(cell => cell.replace(/"/g, '').trim()));
                 
-                const news = [];
-                let prayerText = "לא הוגדרו זמנים";
+                // פירוק לפי שורות
+                const lines = data.split('\n').map(l => l.replace(/"/g, '').trim()).filter(l => l.length > 2);
+                
+                let prayersHtml = "";
+                let tempNews = [];
 
-                // עוברים על השורות (מדלגים על הראשונה של הכותרות)
-                for (let i = 1; i < rows.length; i++) {
-                    const [title, text, order] = rows[i];
-                    if (!title) continue;
-
-                    if (title.includes("זמני תפילה")) {
-                        prayerText = text;
-                    } else {
-                        news.push({ title, text });
+                lines.forEach(line => {
+                    // אם השורה מכילה מילות מפתח של תפילה, נשים אותה בימין
+                    if (line.includes("שחרית") || line.includes("מנחה") || line.includes("ערבית")) {
+                        prayersHtml += `<div class="prayer-item">${line}</div>`;
+                    } 
+                    // אחרת, אם זו לא הכותרת של הטבלה, נשים בשמאל
+                    else if (!line.includes("TitleText") && !line.includes("זמני תפילה")) {
+                        tempNews.push(line);
                     }
-                }
+                });
 
-                document.getElementById('prayers-list').textContent = prayerText;
-                newsItems = news;
+                document.getElementById('prayers-list').innerHTML = prayersHtml || "מעדכן זמנים...";
+                newsItems = tempNews;
 
                 if (newsItems.length > 0 && currentIndex === 0) showNext();
             } catch (e) {}
@@ -187,27 +156,20 @@
 
         function showNext() {
             if (newsItems.length > 0) {
-                const titleEl = document.getElementById('msg-title');
                 const bodyEl = document.getElementById('msg-body');
-                
                 bodyEl.style.opacity = 0;
                 setTimeout(() => {
-                    const item = newsItems[currentIndex];
-                    titleEl.textContent = item.title;
-                    bodyEl.textContent = item.text;
-                    
-                    // התאמת גודל טקסט
-                    bodyEl.style.fontSize = item.text.length > 50 ? "3rem" : "5rem";
-                    
+                    bodyEl.textContent = newsItems[currentIndex];
+                    bodyEl.style.fontSize = newsItems[currentIndex].length > 40 ? "3.2rem" : "5.5rem";
                     bodyEl.style.opacity = 1;
                     currentIndex = (currentIndex + 1) % newsItems.length;
-                }, 600);
+                }, 500);
             }
         }
 
         loadSheets();
         setInterval(loadSheets, 60000);
-        setInterval(showNext, 10000); // 10 שניות לכל מודעה
+        setInterval(showNext, 10000);
     </script>
 </body>
 </html>
