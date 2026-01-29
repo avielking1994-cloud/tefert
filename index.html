@@ -11,145 +11,68 @@
             font-family: 'Assistant', sans-serif;
             background: #050a0f;
             background-image: radial-gradient(circle at center, #102030 0%, #050a0f 100%);
-            color: white; 
-            margin: 0; 
-            padding: 4vh 4vw; /* מרווח ביטחון מהקצוות של הטלוויזיה */
-            display: flex; 
-            flex-direction: column; 
-            height: 100vh; 
-            overflow: hidden;
+            color: white; margin: 0; padding: 3vh 2vw; 
+            display: flex; flex-direction: column; height: 100vh; overflow: hidden;
         }
 
         header {
             background: linear-gradient(145deg, #1e3c72, #2a5298);
-            padding: 0 30px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            border-bottom: 4px solid #d4af37; 
-            border-radius: 15px 15px 0 0; 
-            height: 12vh; /* הוקטן מעט כדי למנוע חיתוך למטה */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            padding: 0 30px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 4px solid #d4af37; border-radius: 15px 15px 0 0; height: 12vh;
         }
 
-        .header-right h1 { margin: 0; font-size: 2.5rem; color: #d4af37; text-shadow: 2px 2px 8px rgba(0,0,0,0.5); }
+        .header-right h1 { margin: 0; font-size: 2.2rem; color: #d4af37; text-shadow: 2px 2px 8px rgba(0,0,0,0.5); }
         #clock { font-size: 3.5rem; font-weight: 800; color: #fff; }
 
-        main { 
-            flex-grow: 1; 
-            display: flex; 
-            gap: 25px; 
-            padding: 20px 0; 
-            height: 78vh; /* מותאם למנוע חיתוך */
-            min-height: 0;
-        }
+        main { flex-grow: 1; display: flex; gap: 15px; padding: 15px 0; height: 80vh; }
 
-        #sidebar { 
-            width: 30%; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 15px; 
-            height: 100%;
-        }
+        /* חלוקה ל-3 טורים */
+        .column { display: flex; flex-direction: column; gap: 15px; height: 100%; }
+        #col-right { width: 22%; } /* זמנים */
+        #col-center { width: 56%; } /* הודעות */
+        #col-left { width: 22%; } /* פרנסי היום */
 
         .section-box { 
             background: rgba(255, 255, 255, 0.03); 
             border: 2px solid rgba(212, 175, 55, 0.4); 
-            border-radius: 15px; 
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #community-section { 
-            flex-grow: 1; 
-            overflow: hidden; 
+            border-radius: 12px; padding: 10px;
         }
 
         .sidebar-title { 
-            font-size: 1.6rem; 
-            color: #d4af37; 
-            text-align: center; 
-            margin-bottom: 10px; 
-            border-bottom: 2px solid #d4af37; 
-            font-weight: 800;
-            padding-bottom: 5px;
-        }
-
-        #prayers-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            justify-content: flex-start;
+            font-size: 1.4rem; color: #d4af37; text-align: center; 
+            margin-bottom: 8px; border-bottom: 2px solid #d4af37; font-weight: 800;
         }
 
         .prayer-item { 
-            font-size: 1.4rem; 
-            padding: 8px; 
-            background: rgba(255, 255, 255, 0.07); 
-            border-radius: 8px; 
-            text-align: center; 
-            border-right: 5px solid #d4af37; 
-            font-weight: 600;
-            white-space: nowrap;
+            font-size: 1.2rem; padding: 6px; background: rgba(255, 255, 255, 0.07); 
+            border-radius: 6px; text-align: center; border-right: 4px solid #d4af37; margin-bottom: 5px;
         }
 
-        .zman-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 8px; 
-        }
+        .zman-grid { display: grid; grid-template-columns: 1fr; gap: 5px; }
+        .zman-item { background: rgba(0,0,0,0.4); padding: 5px; border-radius: 6px; display: flex; justify-content: space-between; padding: 5px 10px; border: 1px solid rgba(212,175,55,0.2); }
+        .zman-label { color: #d4af37; font-size: 0.9rem; }
+        .zman-value { font-weight: 700; font-size: 1.1rem; }
 
-        .zman-item { 
-            background: rgba(0,0,0,0.4); 
-            padding: 8px; 
-            border-radius: 8px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            border: 1px solid rgba(212, 175, 55, 0.2); 
-        }
-
-        .zman-label { color: #d4af37; font-size: 0.8rem; font-weight: 600; }
-        .zman-value { font-weight: 800; font-size: 1.2rem; color: #fff; }
-
+        /* מרכז - הודעות */
         #message-card {
-            flex-grow: 1; 
-            background: #fff; 
-            color: #050a0f; 
-            border-radius: 20px;
-            display: flex; 
-            flex-direction: column; 
-            padding: 40px; 
-            text-align: center;
-            border: 6px solid #d4af37; 
-            justify-content: center; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            height: 100%;
+            background: #fff; color: #050a0f; border-radius: 20px;
+            display: flex; flex-direction: column; padding: 30px; text-align: center;
+            border: 6px solid #d4af37; justify-content: center; height: 100%;
         }
+        #msg-header { font-size: 2.5rem; color: #1e3c72; margin-bottom: 15px; font-weight: 800; border-bottom: 3px solid #d4af37; display: inline-block; }
+        #msg-body { font-weight: 600; line-height: 1.3; font-size: 3rem; }
 
-        #msg-header { 
-            font-size: 2.8rem; 
-            color: #1e3c72; 
-            margin-bottom: 15px; 
-            font-weight: 800; 
-            border-bottom: 3px solid #d4af37; 
-            display: inline-block; 
-            padding-bottom: 5px; 
+        /* שמאל - פרנסי היום */
+        .patron-box {
+            flex: 1; background: rgba(212, 175, 55, 0.1);
+            border: 2px solid #d4af37; border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 10px;
         }
+        .patron-title { color: #d4af37; font-size: 1.2rem; font-weight: 800; text-decoration: underline; margin-bottom: 5px; }
+        .patron-name { color: #fff; font-size: 1.5rem; font-weight: 600; line-height: 1.2; }
 
-        #msg-body { font-weight: 600; line-height: 1.3; transition: opacity 0.5s; }
-
-        footer { 
-            height: 5vh; 
-            text-align: center; 
-            color: rgba(212, 175, 55, 0.7); 
-            font-size: 1rem; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: 600; 
-        }
+        footer { height: 5vh; text-align: center; color: rgba(212, 175, 55, 0.7); font-size: 0.9rem; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
@@ -163,19 +86,36 @@
     </header>
 
     <main>
-        <div id="sidebar">
-            <div id="community-section" class="section-box">
+        <div id="col-right" class="column">
+            <div id="community-section" class="section-box" style="flex-grow: 1;">
                 <div class="sidebar-title">זמני הישיבה</div>
                 <div id="prayers-list"></div>
             </div>
-            <div id="zmanim-section" class="section-box">
-                <div class="sidebar-title" style="font-size: 1.1rem;">זמני היום - בני ברק</div>
+            <div class="section-box">
                 <div id="zmanim-list" class="zman-grid"></div>
             </div>
         </div>
-        <div id="message-card">
-            <div><span id="msg-header"></span></div>
-            <div id="msg-body">טוען הודעות...</div>
+
+        <div id="col-center" class="column">
+            <div id="message-card">
+                <div><span id="msg-header"></span></div>
+                <div id="msg-body">טוען הודעות...</div>
+            </div>
+        </div>
+
+        <div id="col-left" class="column">
+            <div class="patron-box">
+                <div class="patron-title">פרנס היום</div>
+                <div id="patron-day" class="patron-name">טוען...</div>
+            </div>
+            <div class="patron-box">
+                <div class="patron-title">פרנס השבוע</div>
+                <div id="patron-week" class="patron-name">טוען...</div>
+            </div>
+            <div class="patron-box">
+                <div class="patron-title">פרנס החודש</div>
+                <div id="patron-month" class="patron-name">טוען...</div>
+            </div>
         </div>
     </main>
 
@@ -233,6 +173,7 @@
                 
                 let prayersHtml = "";
                 let tempNews = [];
+                let patrons = { day: "נדבת לב", week: "נדבת לב", month: "נדבת לב" };
 
                 rows.forEach((row, index) => {
                     if (index === 0 || row.length < 1) return;
@@ -241,12 +182,19 @@
                     
                     if (colA.includes("שחרית") || colA.includes("מנחה") || colA.includes("ערבית")) {
                         prayersHtml += `<div class="prayer-item">${colA} ${colB}</div>`;
-                    } else if (colA || colB) {
+                    } else if (colA.includes("פרנס היום")) { patrons.day = colB; }
+                    else if (colA.includes("פרנס השבוע")) { patrons.week = colB; }
+                    else if (colA.includes("פרנס החודש")) { patrons.month = colB; }
+                    else if (colA || colB) {
                         tempNews.push({ title: colA, body: colB });
                     }
                 });
 
                 document.getElementById('prayers-list').innerHTML = prayersHtml;
+                document.getElementById('patron-day').textContent = patrons.day;
+                document.getElementById('patron-week').textContent = patrons.week;
+                document.getElementById('patron-month').textContent = patrons.month;
+                
                 newsItems = tempNews;
                 if (newsItems.length > 0 && currentIndex === 0) showNext();
             } catch (e) { }
@@ -262,7 +210,7 @@
                 h.textContent = item.title;
                 b.textContent = item.body;
                 let len = item.body.length;
-                b.style.fontSize = len < 30 ? "5rem" : len < 100 ? "3.2rem" : "1.8rem";
+                b.style.fontSize = len < 30 ? "4.5rem" : len < 100 ? "3rem" : "1.8rem";
                 b.style.opacity = 1;
                 currentIndex = (currentIndex + 1) % newsItems.length;
             }, 500);
