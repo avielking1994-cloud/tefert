@@ -5,6 +5,7 @@
     <title>לוח מודעות - תפארת עובדיה</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap');
+        
         * { box-sizing: border-box; }
 
         body {
@@ -13,26 +14,34 @@
                         url('http://googleusercontent.com/image_collection/image_retrieval/1711381228697292235_0');
             background-size: cover;
             background-position: center;
-            color: white; margin: 0; padding: 2vh 2vw; 
-            display: flex; flex-direction: column; height: 100vh; overflow: hidden;
-            border: 10px solid #d4af37;
+            color: white; margin: 0; 
+            height: 100vh; width: 100vw;
+            display: flex; flex-direction: column; 
+            overflow: hidden;
+            border: 12px solid #d4af37;
+            padding: 10px;
         }
 
+        /* חלק עליון - 15% מהגובה */
         header {
+            height: 15%;
             background: rgba(16, 33, 61, 0.9);
-            padding: 10px 30px; display: flex; justify-content: space-between; align-items: center;
-            border: 2px solid #d4af37; border-radius: 15px; height: 14vh;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            padding: 0 30px; 
+            display: flex; justify-content: space-between; align-items: center;
+            border: 2px solid #d4af37; border-radius: 15px;
             margin-bottom: 10px;
         }
 
-        .header-right { display: flex; flex-direction: column; justify-content: center; }
-        .header-right h1 { margin: 0; font-size: 2.5rem; color: #d4af37; font-weight: 800; line-height: 1.1; }
-        #date-display { font-size: 1.4rem; color: #ddd; margin-top: 5px; }
-        
-        #clock { font-size: 4.5rem; font-weight: 800; color: #fff; }
+        .header-right h1 { margin: 0; font-size: 2.2rem; color: #d4af37; font-weight: 800; }
+        #date-display { font-size: 1.3rem; color: #ddd; }
+        #clock { font-size: 3.5rem; font-weight: 800; }
 
-        main { flex-grow: 1; display: flex; gap: 15px; padding: 5px 0; height: 62vh; overflow: hidden; }
+        /* חלק מרכזי - 70% מהגובה */
+        main { 
+            height: 70%; 
+            display: flex; gap: 15px; 
+            padding-bottom: 10px;
+        }
 
         .column { display: flex; flex-direction: column; gap: 10px; height: 100%; }
         #col-right { width: 23%; } 
@@ -41,50 +50,52 @@
 
         .section-box { 
             background: rgba(0, 0, 0, 0.7); 
-            border: 1px solid #d4af37; 
-            border-radius: 12px; padding: 12px;
-            backdrop-filter: blur(8px);
+            border: 1px solid rgba(212, 175, 55, 0.5); 
+            border-radius: 12px; padding: 10px;
             overflow: hidden;
+            display: flex; flex-direction: column;
         }
 
         .sidebar-title { 
-            font-size: 1.4rem; color: #d4af37; text-align: center; 
-            margin-bottom: 8px; border-bottom: 2px solid #d4af37; font-weight: 800; padding-bottom: 5px;
+            font-size: 1.3rem; color: #d4af37; text-align: center; 
+            margin-bottom: 5px; border-bottom: 2px solid #d4af37; font-weight: 800;
         }
 
+        #prayers-list { overflow: hidden; flex-grow: 1; }
         .prayer-item { 
-            font-size: 1.3rem; padding: 8px; background: rgba(212, 175, 55, 0.15); 
-            border-radius: 8px; text-align: center; border-right: 5px solid #d4af37; margin-bottom: 6px;
-            font-weight: 600;
+            font-size: 1.2rem; padding: 6px; background: rgba(212, 175, 55, 0.1); 
+            border-radius: 6px; text-align: center; border-right: 4px solid #d4af37; margin-bottom: 5px;
         }
 
-        #zmanim-list { display: flex; flex-direction: column; gap: 4px; }
-        .zman-item { display: flex; justify-content: space-between; padding: 6px 10px; border-bottom: 1px solid rgba(212,175,55,0.2); }
-        .zman-label { color: #d4af37; font-weight: 600; font-size: 1.1rem; }
-        .zman-value { font-weight: 800; font-size: 1.2rem; }
+        .zman-item { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(212,175,55,0.2); padding: 4px 0; }
+        .zman-label { color: #d4af37; font-size: 1rem; }
+        .zman-value { font-weight: 700; font-size: 1.1rem; }
 
         #message-card {
-            background: rgba(255, 255, 255, 0.96); color: #050a0f; border-radius: 25px;
-            display: flex; flex-direction: column; padding: 30px; text-align: center;
-            border: 8px solid #d4af37; justify-content: center; height: 100%;
+            background: rgba(255, 255, 255, 0.96); color: #050a0f; border-radius: 20px;
+            display: flex; flex-direction: column; padding: 20px; text-align: center;
+            border: 6px solid #d4af37; justify-content: center; height: 100%;
         }
-        #msg-header { font-size: 3rem; color: #1e3c72; margin-bottom: 15px; font-weight: 800; border-bottom: 3px solid #d4af37; display: inline-block; }
-        #msg-body { font-weight: 800; line-height: 1.2; font-size: 3.5rem; }
+        #msg-header { font-size: 2.5rem; color: #1e3c72; font-weight: 800; margin-bottom: 10px; }
+        #msg-body { font-weight: 800; font-size: 3rem; line-height: 1.2; }
 
         .patron-box {
-            flex: 1; background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(0,0,0,0.5));
-            border: 2px solid #d4af37; border-radius: 15px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;
+            flex: 1; background: rgba(212, 175, 55, 0.15);
+            border: 2px solid #d4af37; border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 5px; text-align: center;
         }
-        .patron-title { color: #d4af37; font-size: 1.3rem; font-weight: 800; margin-bottom: 3px; }
-        .patron-name { color: #fff; font-size: 1.6rem; font-weight: 600; text-align: center; }
+        .patron-title { color: #d4af37; font-size: 1.1rem; font-weight: 800; text-decoration: underline; }
+        .patron-name { color: #fff; font-size: 1.4rem; font-weight: 600; }
 
+        /* חלק תחתון - 10% מהגובה - מוגן מפני דריסה */
         footer { 
-            height: 10vh; text-align: center; color: #d4af37; 
-            font-size: 2.2rem; display: flex; align-items: center; justify-content: center; 
-            font-weight: 800; text-shadow: 2px 2px 8px black;
-            border-top: 2px solid rgba(212,175,55,0.4);
-            margin-top: 5px;
+            height: 10%;
+            background: rgba(0,0,0,0.4);
+            border-radius: 10px;
+            text-align: center; color: #d4af37; 
+            font-size: 2rem; display: flex; align-items: center; justify-content: center; 
+            font-weight: 800; border-top: 1px solid #d4af37;
         }
     </style>
 </head>
@@ -100,12 +111,12 @@
 
     <main>
         <div id="col-right" class="column">
-            <div class="section-box" style="flex: 2;">
+            <div class="section-box" style="height: 65%;">
                 <div class="sidebar-title">זמני הישיבה</div>
                 <div id="prayers-list"></div>
             </div>
-            <div class="section-box" style="flex: 1;">
-                <div class="sidebar-title" style="font-size: 1.1rem;">זמני היום</div>
+            <div class="section-box" style="height: 35%;">
+                <div class="sidebar-title">זמני היום</div>
                 <div id="zmanim-list"></div>
             </div>
         </div>
@@ -122,7 +133,7 @@
                 <div class="patron-title">פרנס היום</div>
                 <div id="patron-day" class="patron-name">נדבת לב</div>
             </div>
-            <div class="patron-box">
+            <div class="patron-box" style="margin: 5px 0;">
                 <div class="patron-title">פרנס השבוע</div>
                 <div id="patron-week" class="patron-name">נדבת לב</div>
             </div>
@@ -136,6 +147,7 @@
     <footer>נתרם לעילוי נשמת עליזה בת אריאלה ע"ה</footer>
 
     <script>
+        // פונקציות העדכון נשארות זהות
         function updateDateTime() { 
             const now = new Date();
             document.getElementById('clock').textContent = now.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'}); 
@@ -160,31 +172,18 @@
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUHNKYdGwmym273eeGxigpITLd1ugZ-_095S6-QOcfvESZJQHmAZ-QTbZ55nNxtbXFsT2vMFglehg/pub?gid=0&single=true&output=csv';
         let newsItems = []; let currentIndex = 0;
 
-        function parseCSV(text) {
-            let lines = text.split(/\r?\n/);
-            return lines.map(line => {
-                let result = []; let current = ""; let inQuotes = false;
-                for (let i = 0; i < line.length; i++) {
-                    let char = line[i];
-                    if (char === '"' && line[i+1] === '"') { current += '"'; i++; }
-                    else if (char === '"') { inQuotes = !inQuotes; }
-                    else if (char === ',' && !inQuotes) { result.push(current); current = ""; }
-                    else { current += char; }
-                }
-                result.push(current); return result;
-            });
-        }
-
         async function loadSheets() {
             try {
                 const response = await fetch(csvUrl + '&cache=' + new Date().getTime());
                 const data = await response.text();
-                const rows = parseCSV(data);
+                const rows = data.split('\n').map(r => r.split(','));
                 let prayersHtml = ""; let tempNews = [];
                 let patrons = { day: "נדבת לב", week: "נדבת לב", month: "נדבת לב" };
+                
                 rows.forEach((row, index) => {
-                    if (index === 0 || row.length < 1) return;
-                    let colA = (row[0] || "").trim(); let colB = (row[1] || "").trim();
+                    if (index === 0) return;
+                    let colA = (row[0] || "").replace(/"/g, "").trim();
+                    let colB = (row[1] || "").replace(/"/g, "").trim();
                     if (colA.includes("שחרית") || colA.includes("מנחה") || colA.includes("ערבית")) {
                         prayersHtml += `<div class="prayer-item">${colA} ${colB}</div>`;
                     } else if (colA.includes("פרנס היום")) { patrons.day = colB; }
@@ -192,6 +191,7 @@
                     else if (colA.includes("פרנס החודש")) { patrons.month = colB; }
                     else if (colA || colB) { tempNews.push({ title: colA, body: colB }); }
                 });
+
                 document.getElementById('prayers-list').innerHTML = prayersHtml;
                 document.getElementById('patron-day').textContent = patrons.day;
                 document.getElementById('patron-week').textContent = patrons.week;
@@ -205,19 +205,12 @@
             if (newsItems.length === 0) return;
             const h = document.getElementById('msg-header');
             const b = document.getElementById('msg-body');
-            b.style.opacity = 0;
-            setTimeout(() => {
-                const item = newsItems[currentIndex];
-                h.textContent = item.title; b.textContent = item.body;
-                let len = item.body.length;
-                b.style.fontSize = len < 30 ? "4rem" : len < 100 ? "2.8rem" : "1.8rem";
-                b.style.opacity = 1;
-                currentIndex = (currentIndex + 1) % newsItems.length;
-            }, 500);
+            const item = newsItems[currentIndex];
+            h.textContent = item.title; b.textContent = item.body;
+            currentIndex = (currentIndex + 1) % newsItems.length;
         }
 
         loadZmanim(); loadSheets();
-        setInterval(loadZmanim, 3600000);
         setInterval(loadSheets, 60000);
         setInterval(showNext, 12000);
     </script>
