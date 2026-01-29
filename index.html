@@ -4,128 +4,160 @@
     <meta charset="UTF-8">
     <title>לוח מודעות - תפארת עובדיה</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap');
 
         * { box-sizing: border-box; }
 
+        @keyframes pulse-glow {
+            0% { text-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
+            50% { text-shadow: 0 0 25px rgba(212, 175, 55, 0.7), 0 0 40px rgba(212, 175, 55, 0.4); }
+            100% { text-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
+        }
+
         body {
             font-family: 'Assistant', sans-serif;
-            background: #0c0c0c;
+            background-color: #050a0f;
+            background-image: radial-gradient(circle at center, #102030 0%, #050a0f 100%);
             color: white;
             margin: 0;
-            padding: 15px; 
+            padding: 2vh; 
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: hidden; /* מבטל גלילה */
+            overflow: hidden;
         }
 
         header {
-            background: linear-gradient(90deg, #16222a, #3a6073);
-            padding: 10px 25px;
+            background: linear-gradient(145deg, #1e3c72, #2a5298);
+            padding: 0 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid #d4af37;
-            border-radius: 12px 12px 0 0;
-            height: 12%;
+            border-bottom: 5px solid #d4af37;
+            border-radius: 20px 20px 0 0;
+            height: 15vh;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
 
-        .header-right h1 { margin: 0; font-size: 2.2rem; color: #d4af37; }
-        #date-display { font-size: 1.2rem; color: #ddd; }
-        #clock { font-size: 3rem; font-weight: bold; }
+        .header-right h1 { 
+            margin: 0; 
+            font-size: 3rem; 
+            color: #d4af37; 
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+
+        #date-display { font-size: 1.5rem; color: #e0e0e0; }
+        
+        #clock { 
+            font-size: 4.8rem; 
+            font-weight: 800; 
+            color: #fff; 
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
 
         main {
             flex-grow: 1;
             display: flex;
-            gap: 15px;
-            padding: 15px 0;
-            height: 80%;
+            gap: 20px;
+            padding: 20px 0;
+            height: 75vh;
             min-height: 0;
         }
 
         #sidebar {
-            width: 30%;
+            width: 32%;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            height: 100%;
+            gap: 15px;
         }
 
         .section-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid #d4af37;
-            border-radius: 12px;
-            padding: 10px;
-            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        #community-section { flex-grow: 2; } /* זמני ישיבה מקבלים יותר מקום */
-        #zmanim-section { flex-grow: 1; background: rgba(212, 175, 55, 0.05); }
+        #community-section { flex-grow: 1; overflow: hidden; }
+        #zmanim-section { background: rgba(212, 175, 55, 0.1); border-color: #d4af37; }
 
         .sidebar-title {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: #d4af37;
             text-align: center;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #d4af37;
-            padding-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 8px;
+            font-weight: 800;
         }
 
         .prayer-item {
-            font-size: 1.3rem;
-            margin-bottom: 6px;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 6px;
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 8px;
             text-align: center;
+            font-weight: 600;
+            border-right: 5px solid #d4af37;
+        }
+
+        .zman-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
         }
 
         .zman-item {
-            font-size: 1.1rem;
+            background: rgba(0,0,0,0.4);
+            padding: 10px;
+            border-radius: 8px;
             display: flex;
-            justify-content: space-between;
-            padding: 4px 8px;
-            border-bottom: 1px solid rgba(212,175,55,0.2);
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid rgba(212, 175, 55, 0.2);
         }
+
+        .zman-label { color: #d4af37; font-size: 1rem; margin-bottom: 3px; font-weight: 600; }
+        .zman-value { font-weight: 800; font-size: 1.5rem; color: #fff; }
 
         #message-card {
             flex-grow: 1;
-            background: #ffffff;
-            color: #1a1a1a;
-            border-radius: 12px;
+            background: #fff;
+            color: #050a0f;
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
+            padding: 50px;
             text-align: center;
-            border: 4px solid #d4af37;
-            height: 100%;
+            border: 6px solid #d4af37;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            justify-content: center;
         }
 
         #msg-header {
-            font-size: 2.2rem;
-            color: #3a6073;
-            margin-bottom: 15px;
-            font-weight: 700;
-            border-bottom: 2px solid #d4af37;
+            font-size: 3.2rem;
+            color: #1e3c72;
+            margin-bottom: 25px;
+            font-weight: 800;
+            text-decoration: underline #d4af37 4px;
         }
 
         #msg-body { 
             font-weight: 600; 
-            width: 100%;
-            line-height: 1.2;
-            transition: opacity 0.5s ease;
+            line-height: 1.4;
+            transition: opacity 0.5s ease-in-out;
         }
 
         footer { 
-            height: 5%;
+            height: 5vh;
             text-align: center; 
-            color: #aaa; 
-            font-size: 1rem;
-            padding-top: 5px;
+            color: rgba(212, 175, 55, 0.8); 
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
@@ -136,7 +168,7 @@
             <h1>ישיבת תפארת עובדיה</h1>
             <div id="date-display">טוען תאריך...</div>
         </div>
-        <div id="clock">00:00:00</div>
+        <div id="clock">00:00</div>
     </header>
 
     <main>
@@ -147,42 +179,39 @@
             </div>
             
             <div id="zmanim-section" class="section-box">
-                <div class="sidebar-title" style="font-size: 1.2rem;">זמני היום - בני ברק</div>
-                <div id="zmanim-list"></div>
+                <div class="sidebar-title">זמני היום - בני ברק</div>
+                <div id="zmanim-list" class="zman-grid"></div>
             </div>
         </div>
 
         <div id="message-card">
             <div id="msg-header"></div>
-            <p id="msg-body">טוען הודעות...</p>
+            <div id="msg-body">טוען הודעות...</div>
         </div>
     </main>
 
-    <footer>הלוח נתרם לעילוי נשמת עליזה בת אריאלה | אביאל חכמון</footer>
+    <footer>נתרם לעילוי נשמת עליזה בת אריאלה ע"ה</footer>
 
     <script>
         function updateDateTime() { 
             const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit', second:'2-digit'}); 
-            document.getElementById('date-display').textContent = now.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+            document.getElementById('clock').textContent = now.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'}); 
+            document.getElementById('date-display').textContent = now.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         }
-        setInterval(updateDateTime, 1000); 
-        updateDateTime();
+        setInterval(updateDateTime, 1000); updateDateTime();
 
         async function loadZmanim() {
             try {
-                const response = await fetch('https://www.hebcal.com/zmanim?cfg=json&city=IL-Bnei+Brak&sedrot=1');
+                const response = await fetch('https://www.hebcal.com/zmanim?cfg=json&city=IL-Bnei+Brak');
                 const data = await response.json();
                 const t = data.times;
                 
-                let html = `
-                    <div class="zman-item"><span>נץ החמה:</span> <strong>${formatT(t.sunrise)}</strong></div>
-                    <div class="zman-item"><span>סוזק"ש גר"א:</span> <strong>${formatT(t.sozksGra)}</strong></div>
-                    <div class="zman-item"><span>חצות:</span> <strong>${formatT(t.chatzot)}</strong></div>
-                    <div class="zman-item"><span>שקיעה:</span> <strong>${formatT(t.sunset)}</strong></div>
+                document.getElementById('zmanim-list').innerHTML = `
+                    <div class="zman-item"><span class="zman-label">נץ החמה</span><span class="zman-value">${formatT(t.sunrise)}</span></div>
+                    <div class="zman-item"><span class="zman-label">חצות</span><span class="zman-value">${formatT(t.chatzot)}</span></div>
+                    <div class="zman-item"><span class="zman-label">שקיעה</span><span class="zman-value">${formatT(t.sunset)}</span></div>
                 `;
-                document.getElementById('zmanim-list').innerHTML = html;
-            } catch (e) { console.log("Zmanim Error"); }
+            } catch (e) { }
         }
 
         function formatT(iso) { return new Date(iso).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }); }
@@ -202,12 +231,16 @@
 
                 lines.forEach((line, index) => {
                     if (index === 0) return;
-                    let cleanLine = line.replace(/"/g, '').trim();
+                    // ניקוי יסודי של פסיקים בתחילת השורה עבור שחרית/מנחה/ערבית
+                    let cleanLine = line.replace(/^[,\s"']+|[,\s"']+$/g, '').trim();
+                    
                     if (cleanLine.includes("שחרית") || cleanLine.includes("מנחה") || cleanLine.includes("ערבית")) {
                         prayersHtml += `<div class="prayer-item">${cleanLine}</div>`;
                     } else {
                         let parts = cleanLine.split(',');
-                        if (parts[0] || parts[1]) tempNews.push({ title: parts[0] || "", body: parts.slice(1).join(' ') || "" });
+                        let title = parts[0]?.trim() || "";
+                        let body = parts.slice(1).join(' ').trim() || "";
+                        if (title || body) tempNews.push({ title, body });
                     }
                 });
 
@@ -227,7 +260,7 @@
                 h.textContent = item.title;
                 b.textContent = item.body;
                 let len = item.body.length;
-                b.style.fontSize = len < 30 ? "4.5rem" : len < 80 ? "3rem" : "1.8rem";
+                b.style.fontSize = len < 30 ? "5.5rem" : len < 100 ? "3.8rem" : "2.2rem";
                 b.style.opacity = 1;
                 currentIndex = (currentIndex + 1) % newsItems.length;
             }, 500);
@@ -236,7 +269,7 @@
         loadZmanim(); loadSheets();
         setInterval(loadZmanim, 3600000);
         setInterval(loadSheets, 60000);
-        setInterval(showNext, 10000);
+        setInterval(showNext, 12000);
     </script>
 </body>
 </html>
