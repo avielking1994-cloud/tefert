@@ -9,7 +9,7 @@
             background-color: #0c0c0c;
             color: white;
             margin: 0;
-            padding: 40px; /* שולי ביטחון רחבים למסכי טלוויזיה */
+            padding: 40px; 
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -28,7 +28,7 @@
         }
 
         .header-right h1 { margin: 0; font-size: 2.2rem; color: #d4af37; }
-        #hebrew-date { font-size: 1.4rem; color: #ffffff; font-weight: bold; margin-top: 5px; }
+        #date-display { font-size: 1.4rem; color: #ffffff; font-weight: bold; margin-top: 5px; }
         #clock { font-size: 3rem; font-weight: bold; }
 
         main {
@@ -41,7 +41,6 @@
             min-height: 0;
         }
 
-        /* מלבן זמני תפילה קבוע */
         #prayers-sidebar {
             width: 32%;
             background: rgba(255, 255, 255, 0.08);
@@ -72,7 +71,6 @@
             border: 1px solid rgba(212, 175, 55, 0.3);
         }
 
-        /* מלבן מודעות מתחלפות */
         #message-card {
             flex-grow: 1;
             background: rgba(255, 255, 255, 0.98);
@@ -122,7 +120,7 @@
     <header>
         <div class="header-right">
             <h1>ישיבת תפארת עובדיה</h1>
-            <div id="hebrew-date">טוען תאריך...</div>
+            <div id="date-display">טוען תאריך...</div>
         </div>
         <div id="clock">00:00:00</div>
     </header>
@@ -141,24 +139,17 @@
     <footer>כל הזכויות שמורות לאביאל חכמון | הלוח נתרם לעילוי נשמת עליזה בת אריאלה</footer>
 
     <script>
-        // 1. שעון ותאריך עברי פנימי (ללא תלות באתר חיצוני)
-        function updateClock() { 
+        // 1. שעון ותאריך לועזי
+        function updateDateTime() { 
             const now = new Date();
+            // עדכון שעון
             document.getElementById('clock').textContent = now.toLocaleTimeString('he-IL'); 
+            // עדכון תאריך לועזי בפורמט: DD/MM/YYYY
+            const dateStr = now.toLocaleDateString('he-IL');
+            document.getElementById('date-display').textContent = dateStr;
         }
-        setInterval(updateClock, 1000); 
-        updateClock();
-
-        function getHebrewDate() {
-            try {
-                const options = { calendar: 'hebrew', day: 'numeric', month: 'long', year: 'numeric' };
-                const hebDate = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', options).format(new Date());
-                document.getElementById('hebrew-date').textContent = hebDate;
-            } catch (e) {
-                document.getElementById('hebrew-date').textContent = "";
-            }
-        }
-        getHebrewDate();
+        setInterval(updateDateTime, 1000); 
+        updateDateTime();
 
         // 2. ניהול נתונים מהגוגל שיטס
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUHNKYdGwmym273eeGxigpITLd1ugZ-_095S6-QOcfvESZJQHmAZ-QTbZ55nNxtbXFsT2vMFglehg/pub?gid=0&single=true&output=csv';
@@ -176,16 +167,13 @@
                 let tempNews = [];
 
                 lines.forEach((line, index) => {
-                    if (index === 0) return; // דלוג על כותרות הטבלה
-                    
+                    if (index === 0) return;
                     let cleanLine = line.replace(/^,+|,+$/g, '').replace(/"/g, '').trim();
                     
-                    // זיהוי שורות תפילה לצד ימין
                     if (cleanLine.includes("שחרית") || cleanLine.includes("מנחה") || cleanLine.includes("ערבית")) {
                         let prayerText = cleanLine.replace(/^,/, '').trim();
                         prayersHtml += `<div class="prayer-item">${prayerText}</div>`;
                     } 
-                    // זיהוי הודעות לצד שמאל (מתעלם מכותרות טכניות)
                     else if (!cleanLine.includes("TitleText") && !cleanLine.includes("זמני תפילה")) {
                         let parts = cleanLine.split(',');
                         let title = parts[0] ? parts[0].trim() : "";
@@ -200,7 +188,7 @@
             } catch (e) { console.log("Error loading sheets"); }
         }
 
-        // 3. החלפת הודעות עם פונט דינמי
+        // 3. החלפת הודעות
         function showNext() {
             if (newsItems.length > 0) {
                 const headerEl = document.getElementById('msg-header');
@@ -212,7 +200,6 @@
                     headerEl.textContent = item.title;
                     bodyEl.textContent = item.body;
                     
-                    // התאמת גודל הטקסט למניעת חריגה
                     let len = item.body.length;
                     if (len < 25) bodyEl.style.fontSize = "5rem";
                     else if (len < 60) bodyEl.style.fontSize = "3.5rem";
@@ -225,10 +212,9 @@
             }
         }
 
-        // הפעלה ראשונית ורענון אוטומטי
         loadSheets();
-        setInterval(loadSheets, 60000); // רענון מהאקסל כל דקה
-        setInterval(showNext, 12000); // החלפת הודעה כל 12 שניות
+        setInterval(loadSheets, 60000); 
+        setInterval(showNext, 12000); 
     </script>
 </body>
 </html>
