@@ -152,4 +152,15 @@
 
         function showNextMessage() {
             if (messages.length > 0) {
-                const msg
+                const msgElement = document.getElementById('message-text');
+                msgElement.textContent = messages[index];
+                index = (index + 1) % messages.length;
+            }
+        }
+
+        loadSheets();
+        setInterval(loadSheets, 60000); // רענון מהטבלה כל דקה
+        setInterval(showNextMessage, 6000); // החלפת הודעה כל 6 שניות
+    </script>
+</body>
+</html>
