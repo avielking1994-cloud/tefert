@@ -22,7 +22,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 4px solid #d4af37; /* זהב */
+            border-bottom: 4px solid #d4af37;
             box-shadow: 0 5px 20px rgba(0,0,0,0.6);
         }
 
@@ -33,21 +33,10 @@
             text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
         }
 
-        .header-left {
-            text-align: left;
-        }
-
         #clock {
             font-size: 4.5rem;
             font-weight: bold;
             color: #ffffff;
-            line-height: 1;
-        }
-
-        #date-hebrew {
-            font-size: 1.8rem;
-            color: #bdc3c7;
-            margin-top: 5px;
         }
 
         main {
@@ -56,7 +45,6 @@
             justify-content: center;
             align-items: center;
             background: radial-gradient(circle, #1b2735 0%, #090a0f 100%);
-            padding: 30px;
         }
 
         #message-card {
@@ -74,10 +62,9 @@
         }
 
         #message-text {
-            font-size: 5.5rem;
+            font-size: 5rem;
             font-weight: bold;
             margin: 0;
-            padding: 20px;
         }
 
         footer {
@@ -86,7 +73,6 @@
             text-align: center;
             font-size: 2rem;
             color: #d4af37;
-            letter-spacing: 2px;
             border-top: 2px solid #222;
         }
     </style>
@@ -96,53 +82,47 @@
     <header>
         <div class="header-right">
             <h1>ישיבת תפארת עובדיה</h1>
-            <div id="hebrew-full-date" style="font-size: 1.4rem; color: #fff; margin-top: 10px;">טוען תאריך...</div>
+            <div id="hebrew-date" style="font-size: 1.5rem; color: #fff;">טוען תאריך...</div>
         </div>
         <div class="header-left">
             <div id="clock">00:00:00</div>
-            <div id="date-hebrew"></div>
         </div>
     </header>
 
     <main>
         <div id="message-card">
-            <p id="message-text">טוען מודעות מהמערכת...</p>
+            <p id="message-text">טוען הודעות...</p>
         </div>
     </main>
 
     <footer>
-        "קבעת עיתים לתורה?" | הודעות ועדכונים שוטפים
+        "קבעת עיתים לתורה?" | לוח מודעות דיגיטלי
     </footer>
 
     <script>
-        // עדכון שעון
         function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString('he-IL');
+            document.getElementById('clock').textContent = new Date().toLocaleTimeString('he-IL');
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // תאריך עברי מ-Hebcal
         async function fetchHebrewDate() {
             try {
                 const res = await fetch('https://www.hebcal.com/etc/hdate-he.json');
                 const data = await res.json();
-                document.getElementById('hebrew-full-date').textContent = data.hebrew;
+                document.getElementById('hebrew-date').textContent = data.hebrew;
             } catch (e) { console.error("Date error"); }
         }
         fetchHebrewDate();
 
-        // משיכת הודעות מהגוגל שיטס שלך
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6y_N_u69uW_M1p3V_vA6_D9VjRjY4u9X0-U6U9Rz9fG7-x-Yy-Z8Z-Z-Z/pub?output=csv'; 
-        // הערה: החלפתי לכתובת ה-CSV הכללית, וודא שזה הקישור המדויק מה-Publish to web שלך
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT16y6S3K0yH2YqKIdB6Dq9mYy_Yy3-x-O_N_p2W1W_o9x-X_Z-Z-Z/pub?output=csv'; 
         
-        let messages = ["ברוכים הבאים לישיבה"];
+        let messages = ["ברוכים הבאים"];
         let index = 0;
 
         async function loadSheets() {
             try {
-                const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vT16y6S3K0yH2YqKIdB6Dq9mYy_Yy3-x-O_N_p2W1W_o9x-X_Z-Z-Z/pub?output=csv'); // כאן שמתי את הקישור
+                const response = await fetch(csvUrl);
                 const data = await response.text();
                 messages = data.split('\n').map(m => m.trim()).filter(m => m !== "");
             } catch (e) { console.error("Sheet error"); }
@@ -156,8 +136,8 @@
         }
 
         loadSheets();
-        setInterval(loadSheets, 60000); // רענון נתונים כל דקה
-        setInterval(showNextMessage, 5000); // החלפת הודעה כל 5 שניות
+        setInterval(loadSheets, 60000);
+        setInterval(showNextMessage, 5000);
     </script>
 </body>
 </html>
