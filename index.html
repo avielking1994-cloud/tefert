@@ -13,46 +13,29 @@
             font-family: 'Assistant', sans-serif;
             background: linear-gradient(rgba(0, 15, 35, 0.8), rgba(0, 15, 35, 0.8)), 
                         url('http://googleusercontent.com/image_collection/image_retrieval/1711381228697292235_0');
-            background-size: cover;
-            background-position: center;
-            color: white; margin: 0; 
-            height: 100vh; width: 100vw;
-            display: flex; flex-direction: column; 
-            overflow: hidden;
-            border: 12px solid #d4af37;
-            padding: 10px;
+            background-size: cover; background-position: center;
+            color: white; margin: 0; height: 100vh; width: 100vw;
+            display: flex; flex-direction: column; overflow: hidden;
+            border: 12px solid #d4af37; padding: 10px;
         }
 
         header {
-            height: 15%;
-            background: rgba(16, 33, 61, 0.9);
-            padding: 0 30px; 
+            height: 15%; background: rgba(16, 33, 61, 0.9); padding: 0 30px; 
             display: flex; justify-content: space-between; align-items: center;
-            border: 2px solid #d4af37; border-radius: 15px;
-            margin-bottom: 10px;
+            border: 2px solid #d4af37; border-radius: 15px; margin-bottom: 10px;
         }
 
         .header-right h1 { margin: 0; font-size: 2.2rem; color: #d4af37; font-weight: 800; }
         #date-display { font-size: 1.3rem; color: #ddd; }
         #clock { font-size: 3.5rem; font-weight: 800; }
 
-        main { 
-            height: 70%; 
-            display: flex; gap: 15px; 
-            padding-bottom: 10px;
-        }
-
+        main { height: 70%; display: flex; gap: 15px; padding-bottom: 10px; }
         .column { display: flex; flex-direction: column; gap: 10px; height: 100%; }
-        #col-right { width: 23%; } 
-        #col-center { width: 54%; } 
-        #col-left { width: 23%; } 
+        #col-right { width: 23%; } #col-center { width: 54%; } #col-left { width: 23%; } 
 
         .section-box { 
-            background: rgba(0, 0, 0, 0.7); 
-            border: 1px solid rgba(212, 175, 55, 0.5); 
-            border-radius: 12px; padding: 10px;
-            overflow: hidden;
-            display: flex; flex-direction: column;
+            background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(212, 175, 55, 0.5); 
+            border-radius: 12px; padding: 10px; overflow: hidden; display: flex; flex-direction: column;
         }
 
         .sidebar-title { 
@@ -74,14 +57,12 @@
             background: rgba(255, 255, 255, 0.96); color: #050a0f; border-radius: 20px;
             display: flex; flex-direction: column; padding: 20px; text-align: center;
             border: 6px solid #d4af37; justify-content: center; height: 100%;
-            transition: all 0.5s ease;
         }
         #msg-header { font-size: 2.5rem; color: #1e3c72; font-weight: 800; margin-bottom: 10px; }
         #msg-body { font-weight: 800; font-size: 3rem; line-height: 1.2; }
 
         .patron-box {
-            flex: 1; background: rgba(212, 175, 55, 0.15);
-            border: 2px solid #d4af37; border-radius: 12px;
+            flex: 1; background: rgba(212, 175, 55, 0.15); border: 2px solid #d4af37; border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             padding: 5px; text-align: center;
         }
@@ -89,12 +70,9 @@
         .patron-name { color: #fff; font-size: 1.4rem; font-weight: 600; }
 
         footer { 
-            height: 10%;
-            background: rgba(0,0,0,0.4);
-            border-radius: 10px;
-            text-align: center; color: #d4af37; 
-            font-size: 2rem; display: flex; align-items: center; justify-content: center; 
-            font-weight: 800; border-top: 1px solid #d4af37;
+            height: 10%; background: rgba(0,0,0,0.4); border-radius: 10px;
+            text-align: center; color: #d4af37; font-size: 2rem; display: flex; 
+            align-items: center; justify-content: center; font-weight: 800; border-top: 1px solid #d4af37;
         }
     </style>
 </head>
@@ -128,28 +106,30 @@
         </div>
 
         <div id="col-left" class="column">
-            <div class="patron-box">
-                <div class="patron-title">פרנס היום</div>
-                <div id="patron-day" class="patron-name">נדבת לב</div>
-            </div>
-            <div class="patron-box" style="margin: 5px 0;">
-                <div class="patron-title">פרנס השבוע</div>
-                <div id="patron-week" class="patron-name">נדבת לב</div>
-            </div>
-            <div class="patron-box">
-                <div class="patron-title">פרנס החודש</div>
-                <div id="patron-month" class="patron-name">נדבת לב</div>
+            <div id="patrons-container" class="column" style="width: 100%; height: 100%;">
+                <div class="patron-box">
+                    <div class="patron-title">פרנס היום</div>
+                    <div id="patron-day" class="patron-name">נדבת לב</div>
+                </div>
+                <div class="patron-box" style="margin: 5px 0;">
+                    <div class="patron-title">פרנס השבוע</div>
+                    <div id="patron-week" class="patron-name">נדבת לב</div>
+                </div>
+                <div class="patron-box">
+                    <div class="patron-title">פרנס החודש</div>
+                    <div id="patron-month" class="patron-name">נדבת לב</div>
+                </div>
             </div>
         </div>
     </main>
 
     <footer>נתרם לעילוי נשמת עליזה בת אריאלה ע"ה</footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
         function updateDateTime() { 
             const now = new Date();
             document.getElementById('clock').textContent = now.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'}); 
-            
             let dateStr = now.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
             if (window.hebcal) {
                 const hDate = new window.hebcal.HDate(now);
@@ -176,55 +156,53 @@
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUHNKYdGwmym273eeGxigpITLd1ugZ-_095S6-QOcfvESZJQHmAZ-QTbZ55nNxtbXFsT2vMFglehg/pub?gid=0&single=true&output=csv';
         let newsItems = []; let currentIndex = 0;
 
-        async function loadSheets() {
-            try {
-                const response = await fetch(csvUrl + '&cache=' + new Date().getTime());
-                const data = await response.text();
-                // שימוש בביטוי רגולרי כדי לפצל נכון שורות כולל פסיקים בתוך מרכאות
-                const rows = data.split('\n').map(r => r.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || []);
-                
-                let prayersHtml = ""; let tempNews = [];
-                let patrons = { day: "נדבת לב", week: "נדבת לב", month: "נדבת לב" };
-                
-                rows.forEach((row, index) => {
-                    if (index === 0) return;
-                    let colA = (row[0] || "").replace(/"/g, "").trim();
-                    let colB = (row[1] || "").replace(/"/g, "").trim();
-                    let colC = (row[2] || "").replace(/"/g, "").trim(); // העמודה של הצבע
+        function loadSheets() {
+            Papa.parse(csvUrl, {
+                download: true,
+                complete: function(results) {
+                    const rows = results.data;
+                    let prayersHtml = ""; let tempNews = [];
+                    let patrons = { day: "נדבת לב", week: "נדבת לב", month: "נדבת לב" };
+                    
+                    rows.forEach((row, index) => {
+                        if (index === 0) return;
+                        let colA = (row[0] || "").trim();
+                        let colB = (row[1] || "").trim();
+                        let colC = (row[2] || "").trim();
 
-                    if (colA.includes("שחרית") || colA.includes("מנחה") || colA.includes("ערבית")) {
-                        prayersHtml += `<div class="prayer-item">${colA} ${colB}</div>`;
-                    } else if (colA.includes("פרנס היום")) { patrons.day = colB; }
-                    else if (colA.includes("פרנס השבוע")) { patrons.week = colB; }
-                    else if (colA.includes("פרנס החודש")) { patrons.month = colB; }
-                    else if (colA || colB) { 
-                        tempNews.push({ title: colA, body: colB, color: colC }); 
-                    }
-                });
+                        if (colA.includes("שחרית") || colA.includes("מנחה") || colA.includes("ערבית")) {
+                            prayersHtml += `<div class="prayer-item">${colA} ${colB}</div>`;
+                        } else if (colA.includes("פרנס היום")) { patrons.day = colB; }
+                        else if (colA.includes("פרנס השבוע")) { patrons.week = colB; }
+                        else if (colA.includes("פרנס החודש")) { patrons.month = colB; }
+                        else if (colA || colB) { 
+                            tempNews.push({ title: colA, body: colB, color: colC }); 
+                        }
+                    });
 
-                document.getElementById('prayers-list').innerHTML = prayersHtml;
-                document.getElementById('patron-day').textContent = patrons.day;
-                document.getElementById('patron-week').textContent = patrons.week;
-                document.getElementById('patron-month').textContent = patrons.month;
-                newsItems = tempNews;
-                if (newsItems.length > 0 && currentIndex === 0) showNext();
-            } catch (e) { }
+                    document.getElementById('prayers-list').innerHTML = prayersHtml;
+                    document.getElementById('patron-day').textContent = patrons.day;
+                    document.getElementById('patron-week').textContent = patrons.week;
+                    document.getElementById('patron-month').textContent = patrons.month;
+                    newsItems = tempNews;
+                    if (newsItems.length > 0 && currentIndex === 0) showNext();
+                }
+            });
         }
 
         function showNext() {
             if (newsItems.length === 0) return;
             const h = document.getElementById('msg-header');
             const b = document.getElementById('msg-body');
-            const card = document.getElementById('message-card');
-            
             const item = newsItems[currentIndex];
             
             h.textContent = item.title; 
             b.textContent = item.body;
             
-            // שינוי צבע הפונט לפי עמודה C (אם קיים צבע, אחר כך חוזר לשחור ברירת מחדל של הלוח הלבן)
+            // החלת הצבע מעמודה C
             const textColor = (item.color && item.color !== "") ? item.color : "#050a0f";
             b.style.color = textColor;
+            // כותרת מקבלת את הצבע או כחול כהה ברירת מחדל
             h.style.color = (item.color && item.color !== "") ? textColor : "#1e3c72";
 
             currentIndex = (currentIndex + 1) % newsItems.length;
