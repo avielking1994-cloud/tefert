@@ -31,7 +31,7 @@
 
         main { height: 70%; display: flex; gap: 15px; padding-bottom: 10px; }
         .column { display: flex; flex-direction: column; gap: 10px; height: 100%; }
-        #col-right { width: 23%; } #col-center { width: 54%; } #col-left { width: 23%; } 
+        #col-right { width: 25%; } #col-center { width: 50%; } #col-left { width: 25%; } 
 
         .section-box { 
             background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(212, 175, 55, 0.5); 
@@ -49,20 +49,16 @@
             border-radius: 6px; text-align: center; border-right: 4px solid #d4af37; margin-bottom: 5px;
         }
 
-        .zman-item { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(212,175,55,0.2); padding: 4px 0; }
-        .zman-label { color: #d4af37; font-size: 1rem; }
-        .zman-value { font-weight: 700; font-size: 1.1rem; }
+        .zman-item { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(212,175,55,0.2); padding: 6px 5px; }
+        .zman-label { color: #d4af37; font-size: 1.1rem; font-weight: 600; }
+        .zman-value { font-weight: 700; font-size: 1.2rem; color: white; }
 
         #message-card {
             background: rgba(255, 255, 255, 0.96); color: #050a0f; border-radius: 20px;
             display: flex; flex-direction: column; padding: 20px; text-align: center;
             border: 6px solid #d4af37; justify-content: center; height: 100%;
         }
-
-        #msg-header { 
-            font-size: 2.5rem; color: #1e3c72 !important; font-weight: 800; margin-bottom: 10px;
-        }
-
+        #msg-header { font-size: 2.5rem; color: #1e3c72 !important; font-weight: 800; margin-bottom: 10px; }
         #msg-body { font-weight: 800; font-size: 3rem; line-height: 1.2; }
 
         .patron-box {
@@ -92,20 +88,22 @@
 
     <main>
         <div id="col-right" class="column">
-            <div class="section-box" style="height: 65%;">
+            <div class="section-box" style="height: 55%;">
                 <div class="sidebar-title">זמני הישיבה</div>
                 <div id="prayers-list"></div>
             </div>
-            <div class="section-box" style="height: 35%;">
-                <div class="sidebar-title">זמני היום</div>
-                <div id="zmanim-list">טוען...</div>
+            <div class="section-box" style="height: 45%;">
+                <div class="sidebar-title">זמני היום - בני ברק</div>
+                <div id="zmanim-list">
+                    <div style="text-align:center; padding-top:10px;">טוען זמנים...</div>
+                </div>
             </div>
         </div>
 
         <div id="col-center" class="column">
             <div id="message-card">
                 <div id="msg-header"></div>
-                <div id="msg-body">טוען...</div>
+                <div id="msg-body">טוען הודעות...</div>
             </div>
         </div>
 
@@ -137,18 +135,25 @@
                 const response = await fetch('https://www.hebcal.com/zmanim?cfg=json&city=IL-Bnei+Brak');
                 const data = await response.json();
                 const t = data.times;
+                
                 document.getElementById('zmanim-list').innerHTML = `
-                    <div class="zman-item"><span class="zman-label">נץ</span><span class="zman-value">${formatT(t.sunrise)}</span></div>
-                    <div class="zman-item"><span class="zman-label">חצות</span><span class="zman-value">${formatT(t.chatzot)}</span></div>
+                    <div class="zman-item"><span class="zman-label">עלות השחר</span><span class="zman-value">${formatT(t.alotHaShachar)}</span></div>
+                    <div class="zman-item"><span class="zman-label">נץ החמה</span><span class="zman-value">${formatT(t.sunrise)}</span></div>
+                    <div class="zman-item"><span class="zman-label">חצות היום</span><span class="zman-value">${formatT(t.chatzot)}</span></div>
                     <div class="zman-item"><span class="zman-label">שקיעה</span><span class="zman-value">${formatT(t.sunset)}</span></div>
+                    <div class="zman-item"><span class="zman-label">צאת הכוכבים</span><span class="zman-value">${formatT(t.tzeit708deg)}</span></div>
                 `;
-            } catch (e) { }
+            } catch (e) {
+                document.getElementById('zmanim-list').innerHTML = '<div style="color:red; text-align:center;">שגיאה בטעינת זמנים</div>';
+            }
         }
-        function formatT(iso) { return new Date(iso).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }); }
+        function formatT(iso) { 
+            if(!iso) return "--:--";
+            return new Date(iso).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }); 
+        }
 
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUHNKYdGwmym273eeGxigpITLd1ugZ-_095S6-QOcfvESZJQHmAZ-QTbZ55nNxtbXFsT2vMFglehg/pub?gid=0&single=true&output=csv';
-        let newsItems = []; 
-        let currentIndex = 0;
+        let newsItems = []; let currentIndex = 0;
 
         function loadSheets() {
             Papa.parse(csvUrl, {
@@ -156,8 +161,7 @@
                 skipEmptyLines: true,
                 complete: function(results) {
                     const rows = results.data;
-                    let prayersHtml = ""; 
-                    let tempNews = [];
+                    let prayersHtml = ""; let tempNews = [];
                     let patrons = { day: "נדבת לב", week: "נדבת לב", month: "נדבת לב" };
                     
                     rows.forEach((row, index) => {
@@ -199,6 +203,7 @@
 
         loadZmanim();
         loadSheets();
+        setInterval(loadZmanim, 3600000); 
         setInterval(loadSheets, 30000); 
         setInterval(showNext, 12000);
     </script>
