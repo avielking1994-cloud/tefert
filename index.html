@@ -2,217 +2,196 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>לוח מודעות - תפארת עובדיה</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ישיבת תפארת עובדיה - לוח מודעות</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@hebcal/core@latest/dist/bundle.min.js"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap');
-        
-        * { box-sizing: border-box; }
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Frank+Ruhl+Libre:wght@700&display=swap');
 
         body {
+            margin: 0; padding: 0;
+            background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+            color: white; direction: rtl;
             font-family: 'Assistant', sans-serif;
-            background: linear-gradient(rgba(0, 15, 35, 0.8), rgba(0, 15, 35, 0.8)), 
-                        url('http://googleusercontent.com/image_collection/image_retrieval/1711381228697292235_0');
-            background-size: cover;
-            background-position: center;
-            color: white; margin: 0; 
-            height: 100vh; width: 100vw;
-            display: flex; flex-direction: column; 
             overflow: hidden;
-            border: 12px solid #d4af37;
-            padding: 10px;
+            border: 15px solid #d4af37;
+            box-sizing: border-box;
+            height: 100vh;
         }
 
-        /* חלק עליון - 15% מהגובה */
-        header {
-            height: 15%;
-            background: rgba(16, 33, 61, 0.9);
-            padding: 0 30px; 
-            display: flex; justify-content: space-between; align-items: center;
-            border: 2px solid #d4af37; border-radius: 15px;
-            margin-bottom: 10px;
+        /* שעון ותאריכים */
+        #topCornerInfo {
+            position: absolute;
+            top: 40px;
+            left: 50px;
+            text-align: left;
+            z-index: 1001;
         }
 
-        .header-right h1 { margin: 0; font-size: 2.2rem; color: #d4af37; font-weight: 800; }
-        #date-display { font-size: 1.3rem; color: #ddd; }
-        #clock { font-size: 3.5rem; font-weight: 800; }
+        #clock { 
+            font-size: 85px; 
+            font-weight: bold; 
+            color: #fff; 
+            line-height: 1;
+            font-family: monospace;
+        }
 
-        /* חלק מרכזי - 70% מהגובה */
-        main { 
-            height: 70%; 
-            display: flex; gap: 15px; 
+        .date-line { 
+            font-size: 26px; 
+            color: #ffd700; 
+            font-weight: bold;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* כותרת הישיבה */
+        #mainHeader {
+            text-align: center;
+            padding: 35px 0;
+            border-bottom: 3px double #d4af37;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        #mainHeader h2 {
+            margin: 0;
+            font-family: 'Frank Ruhl Libre', serif;
+            font-size: 80px;
+            color: #ffd700;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+        }
+
+        /* אזור המודעות */
+        #slidesContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 250px);
+            padding: 0 80px;
+            text-align: center;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            width: 100%;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide h1 { 
+            font-size: 110px; 
+            margin-bottom: 25px; 
+            font-family: 'Frank Ruhl Libre', serif;
+            border-bottom: 4px solid;
+            display: inline-block;
             padding-bottom: 10px;
         }
 
-        .column { display: flex; flex-direction: column; gap: 10px; height: 100%; }
-        #col-right { width: 23%; } 
-        #col-center { width: 54%; } 
-        #col-left { width: 23%; } 
-
-        .section-box { 
-            background: rgba(0, 0, 0, 0.7); 
-            border: 1px solid rgba(212, 175, 55, 0.5); 
-            border-radius: 12px; padding: 10px;
-            overflow: hidden;
-            display: flex; flex-direction: column;
-        }
-
-        .sidebar-title { 
-            font-size: 1.3rem; color: #d4af37; text-align: center; 
-            margin-bottom: 5px; border-bottom: 2px solid #d4af37; font-weight: 800;
-        }
-
-        #prayers-list { overflow: hidden; flex-grow: 1; }
-        .prayer-item { 
-            font-size: 1.2rem; padding: 6px; background: rgba(212, 175, 55, 0.1); 
-            border-radius: 6px; text-align: center; border-right: 4px solid #d4af37; margin-bottom: 5px;
-        }
-
-        .zman-item { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(212,175,55,0.2); padding: 4px 0; }
-        .zman-label { color: #d4af37; font-size: 1rem; }
-        .zman-value { font-weight: 700; font-size: 1.1rem; }
-
-        #message-card {
-            background: rgba(255, 255, 255, 0.96); color: #050a0f; border-radius: 20px;
-            display: flex; flex-direction: column; padding: 20px; text-align: center;
-            border: 6px solid #d4af37; justify-content: center; height: 100%;
-        }
-        #msg-header { font-size: 2.5rem; color: #1e3c72; font-weight: 800; margin-bottom: 10px; }
-        #msg-body { font-weight: 800; font-size: 3rem; line-height: 1.2; }
-
-        .patron-box {
-            flex: 1; background: rgba(212, 175, 55, 0.15);
-            border: 2px solid #d4af37; border-radius: 12px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 5px; text-align: center;
-        }
-        .patron-title { color: #d4af37; font-size: 1.1rem; font-weight: 800; text-decoration: underline; }
-        .patron-name { color: #fff; font-size: 1.4rem; font-weight: 600; }
-
-        /* חלק תחתון - 10% מהגובה - מוגן מפני דריסה */
-        footer { 
-            height: 10%;
-            background: rgba(0,0,0,0.4);
-            border-radius: 10px;
-            text-align: center; color: #d4af37; 
-            font-size: 2rem; display: flex; align-items: center; justify-content: center; 
-            font-weight: 800; border-top: 1px solid #d4af37;
+        .slide p { 
+            font-size: 65px; 
+            line-height: 1.4;
+            max-width: 1100px;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-right">
-            <h1>ישיבת תפארת עובדיה</h1>
-            <div id="date-display">טוען...</div>
-        </div>
-        <div id="clock">00:00</div>
-    </header>
+<div id="topCornerInfo">
+    <div id="clock">00:00</div>
+    <div id="hebrewDate" class="date-line">טוען תאריך עברי...</div>
+    <div id="englishDate" class="date-line">00/00/0000</div>
+</div>
 
-    <main>
-        <div id="col-right" class="column">
-            <div class="section-box" style="height: 65%;">
-                <div class="sidebar-title">זמני הישיבה</div>
-                <div id="prayers-list"></div>
-            </div>
-            <div class="section-box" style="height: 35%;">
-                <div class="sidebar-title">זמני היום</div>
-                <div id="zmanim-list"></div>
-            </div>
-        </div>
+<div id="mainHeader">
+    <h2>ישיבת תפארת עובדיה</h2>
+</div>
 
-        <div id="col-center" class="column">
-            <div id="message-card">
-                <div><span id="msg-header"></span></div>
-                <div id="msg-body">טוען...</div>
-            </div>
-        </div>
+<div id="slidesContainer">
+    <div class="slide active">
+        <h1>ברוכים הבאים</h1>
+        <p>טוען נתונים מהשרת...</p>
+    </div>
+</div>
 
-        <div id="col-left" class="column">
-            <div class="patron-box">
-                <div class="patron-title">פרנס היום</div>
-                <div id="patron-day" class="patron-name">נדבת לב</div>
-            </div>
-            <div class="patron-box" style="margin: 5px 0;">
-                <div class="patron-title">פרנס השבוע</div>
-                <div id="patron-week" class="patron-name">נדבת לב</div>
-            </div>
-            <div class="patron-box">
-                <div class="patron-title">פרנס החודש</div>
-                <div id="patron-month" class="patron-name">נדבת לב</div>
-            </div>
-        </div>
-    </main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
-    <footer>נתרם לעילוי נשמת עליזה בת אריאלה ע"ה</footer>
+<script>
+    // 1. עדכון שעון ותאריכים
+    function updateDateTime() {
+        const now = new Date();
+        document.getElementById('clock').innerText = now.toLocaleTimeString('he-IL', {hour: '2-digit', minute: '2-digit', hour12: false});
+        document.getElementById('englishDate').innerText = now.toLocaleDateString('he-IL', {day: '2-digit', month: '2-digit', year: 'numeric'});
 
-    <script>
-        // פונקציות העדכון נשארות זהות
-        function updateDateTime() { 
-            const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'}); 
-            document.getElementById('date-display').textContent = now.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
-        }
-        setInterval(updateDateTime, 1000); updateDateTime();
+        try {
+            const hDate = new window.hebcal.HDate(now);
+            document.getElementById('hebrewDate').innerText = hDate.renderGematriya();
+        } catch (e) { console.error(e); }
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
 
-        async function loadZmanim() {
-            try {
-                const response = await fetch('https://www.hebcal.com/zmanim?cfg=json&city=IL-Bnei+Brak');
-                const data = await response.json();
-                const t = data.times;
-                document.getElementById('zmanim-list').innerHTML = `
-                    <div class="zman-item"><span class="zman-label">נץ</span><span class="zman-value">${formatT(t.sunrise)}</span></div>
-                    <div class="zman-item"><span class="zman-label">חצות</span><span class="zman-value">${formatT(t.chatzot)}</span></div>
-                    <div class="zman-item"><span class="zman-label">שקיעה</span><span class="zman-value">${formatT(t.sunset)}</span></div>
-                `;
-            } catch (e) { }
-        }
-        function formatT(iso) { return new Date(iso).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }); }
+    // 2. משיכת נתונים מהאקסל
+    const raw_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUHNKYdGwmym273eeGxigpITLd1ugZ-_095S6-QOcfvESZJQHmAZ-QTbZ55nNxtbXFsT2vMFglehg/pub?gid=0&single=true&output=csv";
+    const CSV_URL = "https://api.allorigins.win/raw?url=" + encodeURIComponent(raw_url);
 
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUHNKYdGwmym273eeGxigpITLd1ugZ-_095S6-QOcfvESZJQHmAZ-QTbZ55nNxtbXFsT2vMFglehg/pub?gid=0&single=true&output=csv';
-        let newsItems = []; let currentIndex = 0;
+    let slidesData = [];
+    let currentIdx = 0;
 
-        async function loadSheets() {
-            try {
-                const response = await fetch(csvUrl + '&cache=' + new Date().getTime());
-                const data = await response.text();
-                const rows = data.split('\n').map(r => r.split(','));
-                let prayersHtml = ""; let tempNews = [];
-                let patrons = { day: "נדבת לב", week: "נדבת לב", month: "נדבת לב" };
-                
-                rows.forEach((row, index) => {
-                    if (index === 0) return;
-                    let colA = (row[0] || "").replace(/"/g, "").trim();
-                    let colB = (row[1] || "").replace(/"/g, "").trim();
-                    if (colA.includes("שחרית") || colA.includes("מנחה") || colA.includes("ערבית")) {
-                        prayersHtml += `<div class="prayer-item">${colA} ${colB}</div>`;
-                    } else if (colA.includes("פרנס היום")) { patrons.day = colB; }
-                    else if (colA.includes("פרנס השבוע")) { patrons.week = colB; }
-                    else if (colA.includes("פרנס החודש")) { patrons.month = colB; }
-                    else if (colA || colB) { tempNews.push({ title: colA, body: colB }); }
-                });
+    function loadExcel() {
+        Papa.parse(CSV_URL, {
+            download: true,
+            complete: function(results) {
+                const data = results.data.slice(1).filter(r => r[0] || r[1]);
+                if (data.length > 0) {
+                    slidesData = data;
+                    renderSlides();
+                }
+            }
+        });
+    }
 
-                document.getElementById('prayers-list').innerHTML = prayersHtml;
-                document.getElementById('patron-day').textContent = patrons.day;
-                document.getElementById('patron-week').textContent = patrons.week;
-                document.getElementById('patron-month').textContent = patrons.month;
-                newsItems = tempNews;
-                if (newsItems.length > 0 && currentIndex === 0) showNext();
-            } catch (e) { }
-        }
+    function renderSlides() {
+        const container = document.getElementById("slidesContainer");
+        container.innerHTML = "";
+        
+        slidesData.forEach((row, i) => {
+            const div = document.createElement("div");
+            div.className = (i === 0) ? "slide active" : "slide";
+            
+            // צבע מהאקסל (עמודה C) - ברירת מחדל לבן
+            const customColor = row[2] ? row[2].trim() : "white";
+            
+            div.innerHTML = `
+                <h1 style="color: ${customColor}; border-bottom-color: ${customColor};">
+                    ${row[0] || ""}
+                </h1>
+                <p style="color: ${customColor};">
+                    ${row[1] || ""}
+                </p>
+            `;
+            container.appendChild(div);
+        });
+        currentIdx = 0;
+    }
 
-        function showNext() {
-            if (newsItems.length === 0) return;
-            const h = document.getElementById('msg-header');
-            const b = document.getElementById('msg-body');
-            const item = newsItems[currentIndex];
-            h.textContent = item.title; b.textContent = item.body;
-            currentIndex = (currentIndex + 1) % newsItems.length;
-        }
+    function rotateSlides() {
+        const slides = document.querySelectorAll(".slide");
+        if (slides.length <= 1) return;
+        slides[currentIdx].classList.remove("active");
+        currentIdx = (currentIdx + 1) % slides.length;
+        slides[currentIdx].classList.add("active");
+    }
 
-        loadZmanim(); loadSheets();
-        setInterval(loadSheets, 60000);
-        setInterval(showNext, 12000);
-    </script>
+    loadExcel();
+    setInterval(rotateSlides, 10000); // מעבר כל 10 שניות
+    setInterval(loadExcel, 300000);   // רענון אקסל כל 5 דקות
+</script>
 </body>
 </html>
