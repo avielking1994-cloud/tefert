@@ -54,6 +54,7 @@
             display: flex; flex-direction: column; padding: 20px; text-align: center;
             border: 6px solid #d4af37; justify-content: center; height: 100%;
         }
+        /* צבע כותרת המודעה המקורי */
         #msg-header { font-size: 2.5rem; color: #1e3c72; font-weight: 800; margin-bottom: 10px; }
         #msg-body { font-weight: 800; font-size: 3rem; line-height: 1.2; }
 
@@ -135,7 +136,6 @@
                         if (index === 0) return;
                         let colA = String(row[0] || "").trim();
                         let colB = String(row[1] || "").trim();
-                        // ניקוי מוחלט של העמודה השלישית מרווחים וסימנים
                         let colC = String(row[2] || "").replace(/[^a-zA-Z]/g, "").toLowerCase();
 
                         if (colA.includes("שחרית") || colA.includes("מנחה") || colA.includes("ערבית")) {
@@ -167,13 +167,14 @@
             h.textContent = item.title; 
             b.textContent = item.body;
             
-            // הגדרת הצבע - אם עמודה C ריקה או לא תקינה, משתמש בשחור
+            // הכותרת תמיד נשארת בצבע המקורי
+            h.style.color = "#1e3c72";
+
+            // רק גוף המודעה משתנה לפי הצבע מהאקסל
             if (item.color && item.color.length > 2) {
                 b.style.setProperty('color', item.color, 'important');
-                h.style.setProperty('color', item.color, 'important');
             } else {
-                b.style.color = "#050a0f";
-                h.style.color = "#1e3c72";
+                b.style.color = "#050a0f"; // ברירת מחדל שחור
             }
 
             currentIndex = (currentIndex + 1) % newsItems.length;
