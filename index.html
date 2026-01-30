@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>לוח מודעות - תפארת עובדיה</title>
+    <script src="https://cdn.jsdelivr.net/npm/@hebcal/core@latest/dist/bundle.min.js"></script>
     <style>
-        @import url('                                                           ;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap');
         
         * { box-sizing: border-box; }
 
@@ -22,7 +23,6 @@
             padding: 10px;
         }
 
-        /* חלק עליון - 15% מהגובה */
         header {
             height: 15%;
             background: rgba(16, 33, 61, 0.9);
@@ -36,7 +36,6 @@
         #date-display { font-size: 1.3rem; color: #ddd; }
         #clock { font-size: 3.5rem; font-weight: 800; }
 
-        /* חלק מרכזי - 70% מהגובה */
         main { 
             height: 70%; 
             display: flex; gap: 15px; 
@@ -75,6 +74,7 @@
             background: rgba(255, 255, 255, 0.96); color: #050a0f; border-radius: 20px;
             display: flex; flex-direction: column; padding: 20px; text-align: center;
             border: 6px solid #d4af37; justify-content: center; height: 100%;
+            transition: all 0.5s ease;
         }
         #msg-header { font-size: 2.5rem; color: #1e3c72; font-weight: 800; margin-bottom: 10px; }
         #msg-body { font-weight: 800; font-size: 3rem; line-height: 1.2; }
@@ -88,7 +88,6 @@
         .patron-title { color: #d4af37; font-size: 1.1rem; font-weight: 800; text-decoration: underline; }
         .patron-name { color: #fff; font-size: 1.4rem; font-weight: 600; }
 
-        /* חלק תחתון - 10% מהגובה - מוגן מפני דריסה */
         footer { 
             height: 10%;
             background: rgba(0,0,0,0.4);
@@ -147,11 +146,16 @@
     <footer>נתרם לעילוי נשמת עליזה בת אריאלה ע"ה</footer>
 
     <script>
-        // פונקציות העדכון נשארות זהות
         function updateDateTime() { 
             const now = new Date();
             document.getElementById('clock').textContent = now.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'}); 
-            document.getElementById('date-display').textContent = now.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+            
+            let dateStr = now.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+            if (window.hebcal) {
+                const hDate = new window.hebcal.HDate(now);
+                dateStr += " | " + hDate.renderGematriya();
+            }
+            document.getElementById('date-display').textContent = dateStr;
         }
         setInterval(updateDateTime, 1000); updateDateTime();
 
@@ -176,7 +180,9 @@
             try {
                 const response = await fetch(csvUrl + '&cache=' + new Date().getTime());
                 const data = await response.text();
-                const rows = data.split('\n').map(r => r.split(','));
+                // שימוש בביטוי רגולרי כדי לפצל נכון שורות כולל פסיקים בתוך מרכאות
+                const rows = data.split('\n').map(r => r.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || []);
+                
                 let prayersHtml = ""; let tempNews = [];
                 let patrons = { day: "נדבת לב", week: "נדבת לב", month: "נדבת לב" };
                 
@@ -184,12 +190,16 @@
                     if (index === 0) return;
                     let colA = (row[0] || "").replace(/"/g, "").trim();
                     let colB = (row[1] || "").replace(/"/g, "").trim();
+                    let colC = (row[2] || "").replace(/"/g, "").trim(); // העמודה של הצבע
+
                     if (colA.includes("שחרית") || colA.includes("מנחה") || colA.includes("ערבית")) {
                         prayersHtml += `<div class="prayer-item">${colA} ${colB}</div>`;
                     } else if (colA.includes("פרנס היום")) { patrons.day = colB; }
                     else if (colA.includes("פרנס השבוע")) { patrons.week = colB; }
                     else if (colA.includes("פרנס החודש")) { patrons.month = colB; }
-                    else if (colA || colB) { tempNews.push({ title: colA, body: colB }); }
+                    else if (colA || colB) { 
+                        tempNews.push({ title: colA, body: colB, color: colC }); 
+                    }
                 });
 
                 document.getElementById('prayers-list').innerHTML = prayersHtml;
@@ -205,8 +215,18 @@
             if (newsItems.length === 0) return;
             const h = document.getElementById('msg-header');
             const b = document.getElementById('msg-body');
+            const card = document.getElementById('message-card');
+            
             const item = newsItems[currentIndex];
-            h.textContent = item.title; b.textContent = item.body;
+            
+            h.textContent = item.title; 
+            b.textContent = item.body;
+            
+            // שינוי צבע הפונט לפי עמודה C (אם קיים צבע, אחר כך חוזר לשחור ברירת מחדל של הלוח הלבן)
+            const textColor = (item.color && item.color !== "") ? item.color : "#050a0f";
+            b.style.color = textColor;
+            h.style.color = (item.color && item.color !== "") ? textColor : "#1e3c72";
+
             currentIndex = (currentIndex + 1) % newsItems.length;
         }
 
