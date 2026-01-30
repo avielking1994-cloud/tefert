@@ -106,19 +106,17 @@
         </div>
 
         <div id="col-left" class="column">
-            <div id="patrons-container" class="column" style="width: 100%; height: 100%;">
-                <div class="patron-box">
-                    <div class="patron-title">פרנס היום</div>
-                    <div id="patron-day" class="patron-name">נדבת לב</div>
-                </div>
-                <div class="patron-box" style="margin: 5px 0;">
-                    <div class="patron-title">פרנס השבוע</div>
-                    <div id="patron-week" class="patron-name">נדבת לב</div>
-                </div>
-                <div class="patron-box">
-                    <div class="patron-title">פרנס החודש</div>
-                    <div id="patron-month" class="patron-name">נדבת לב</div>
-                </div>
+            <div class="patron-box">
+                <div class="patron-title">פרנס היום</div>
+                <div id="patron-day" class="patron-name">נדבת לב</div>
+            </div>
+            <div class="patron-box" style="margin: 5px 0;">
+                <div class="patron-title">פרנס השבוע</div>
+                <div id="patron-week" class="patron-name">נדבת לב</div>
+            </div>
+            <div class="patron-box">
+                <div class="patron-title">פרנס החודש</div>
+                <div id="patron-month" class="patron-name">נדבת לב</div>
             </div>
         </div>
     </main>
@@ -168,7 +166,7 @@
                         if (index === 0) return;
                         let colA = (row[0] || "").trim();
                         let colB = (row[1] || "").trim();
-                        let colC = (row[2] || "").trim();
+                        let colC = (row[2] || "").trim().toLowerCase(); // ניקוי רווחים והמרה לאותיות קטנות
 
                         if (colA.includes("שחרית") || colA.includes("מנחה") || colA.includes("ערבית")) {
                             prayersHtml += `<div class="prayer-item">${colA} ${colB}</div>`;
@@ -185,7 +183,7 @@
                     document.getElementById('patron-week').textContent = patrons.week;
                     document.getElementById('patron-month').textContent = patrons.month;
                     newsItems = tempNews;
-                    if (newsItems.length > 0 && currentIndex === 0) showNext();
+                    if (newsItems.length > 0) showNext();
                 }
             });
         }
@@ -199,18 +197,18 @@
             h.textContent = item.title; 
             b.textContent = item.body;
             
-            // החלת הצבע מעמודה C
-            const textColor = (item.color && item.color !== "") ? item.color : "#050a0f";
-            b.style.color = textColor;
-            // כותרת מקבלת את הצבע או כחול כהה ברירת מחדל
-            h.style.color = (item.color && item.color !== "") ? textColor : "#1e3c72";
+            // הגדרת צבע - אם אין צבע באקסל, משתמש בשחור כהה (מתאים לרקע לבן)
+            const finalColor = (item.color && item.color !== "") ? item.color : "#050a0f";
+            
+            b.style.color = finalColor;
+            h.style.color = (item.color && item.color !== "") ? finalColor : "#1e3c72";
 
             currentIndex = (currentIndex + 1) % newsItems.length;
         }
 
         loadZmanim(); loadSheets();
-        setInterval(loadSheets, 60000);
-        setInterval(showNext, 12000);
+        setInterval(loadSheets, 60000); // רענון נתונים כל דקה
+        setInterval(showNext, 12000);  // החלפת מודעה כל 12 שניות
     </script>
 </body>
 </html>
