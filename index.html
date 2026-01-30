@@ -49,10 +49,6 @@
             border-radius: 6px; text-align: center; border-right: 4px solid #d4af37; margin-bottom: 5px;
         }
 
-        .zman-item { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(212,175,55,0.2); padding: 4px 0; }
-        .zman-label { color: #d4af37; font-size: 1rem; }
-        .zman-value { font-weight: 700; font-size: 1.1rem; }
-
         #message-card {
             background: rgba(255, 255, 255, 0.96); color: #050a0f; border-radius: 20px;
             display: flex; flex-direction: column; padding: 20px; text-align: center;
@@ -88,13 +84,9 @@
 
     <main>
         <div id="col-right" class="column">
-            <div class="section-box" style="height: 65%;">
+            <div class="section-box" style="height: 100%;">
                 <div class="sidebar-title">זמני הישיבה</div>
                 <div id="prayers-list"></div>
-            </div>
-            <div class="section-box" style="height: 35%;">
-                <div class="sidebar-title">זמני היום</div>
-                <div id="zmanim-list"></div>
             </div>
         </div>
 
@@ -106,18 +98,9 @@
         </div>
 
         <div id="col-left" class="column">
-            <div class="patron-box">
-                <div class="patron-title">פרנס היום</div>
-                <div id="patron-day" class="patron-name">נדבת לב</div>
-            </div>
-            <div class="patron-box" style="margin: 5px 0;">
-                <div class="patron-title">פרנס השבוע</div>
-                <div id="patron-week" class="patron-name">נדבת לב</div>
-            </div>
-            <div class="patron-box">
-                <div class="patron-title">פרנס החודש</div>
-                <div id="patron-month" class="patron-name">נדבת לב</div>
-            </div>
+            <div class="patron-box"><div class="patron-title">פרנס היום</div><div id="patron-day" class="patron-name"></div></div>
+            <div class="patron-box" style="margin: 5px 0;"><div class="patron-title">פרנס השבוע</div><div id="patron-week" class="patron-name"></div></div>
+            <div class="patron-box"><div class="patron-title">פרנס החודש</div><div id="patron-month" class="patron-name"></div></div>
         </div>
     </main>
 
@@ -137,20 +120,6 @@
         }
         setInterval(updateDateTime, 1000); updateDateTime();
 
-        async function loadZmanim() {
-            try {
-                const response = await fetch('https://www.hebcal.com/zmanim?cfg=json&city=IL-Bnei+Brak');
-                const data = await response.json();
-                const t = data.times;
-                document.getElementById('zmanim-list').innerHTML = `
-                    <div class="zman-item"><span class="zman-label">נץ</span><span class="zman-value">${formatT(t.sunrise)}</span></div>
-                    <div class="zman-item"><span class="zman-label">חצות</span><span class="zman-value">${formatT(t.chatzot)}</span></div>
-                    <div class="zman-item"><span class="zman-label">שקיעה</span><span class="zman-value">${formatT(t.sunset)}</span></div>
-                `;
-            } catch (e) { }
-        }
-        function formatT(iso) { return new Date(iso).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }); }
-
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUHNKYdGwmym273eeGxigpITLd1ugZ-_095S6-QOcfvESZJQHmAZ-QTbZ55nNxtbXFsT2vMFglehg/pub?gid=0&single=true&output=csv';
         let newsItems = []; let currentIndex = 0;
 
@@ -164,16 +133,17 @@
                     
                     rows.forEach((row, index) => {
                         if (index === 0) return;
-                        let colA = (row[0] || "").trim();
-                        let colB = (row[1] || "").trim();
-                        let colC = (row[2] || "").trim().toLowerCase(); // ניקוי רווחים והמרה לאותיות קטנות
+                        let colA = String(row[0] || "").trim();
+                        let colB = String(row[1] || "").trim();
+                        // ניקוי מוחלט של העמודה השלישית מרווחים וסימנים
+                        let colC = String(row[2] || "").replace(/[^a-zA-Z]/g, "").toLowerCase();
 
                         if (colA.includes("שחרית") || colA.includes("מנחה") || colA.includes("ערבית")) {
                             prayersHtml += `<div class="prayer-item">${colA} ${colB}</div>`;
                         } else if (colA.includes("פרנס היום")) { patrons.day = colB; }
                         else if (colA.includes("פרנס השבוע")) { patrons.week = colB; }
                         else if (colA.includes("פרנס החודש")) { patrons.month = colB; }
-                        else if (colA || colB) { 
+                        else if (colA !== "" || colB !== "") { 
                             tempNews.push({ title: colA, body: colB, color: colC }); 
                         }
                     });
@@ -197,18 +167,21 @@
             h.textContent = item.title; 
             b.textContent = item.body;
             
-            // הגדרת צבע - אם אין צבע באקסל, משתמש בשחור כהה (מתאים לרקע לבן)
-            const finalColor = (item.color && item.color !== "") ? item.color : "#050a0f";
-            
-            b.style.color = finalColor;
-            h.style.color = (item.color && item.color !== "") ? finalColor : "#1e3c72";
+            // הגדרת הצבע - אם עמודה C ריקה או לא תקינה, משתמש בשחור
+            if (item.color && item.color.length > 2) {
+                b.style.setProperty('color', item.color, 'important');
+                h.style.setProperty('color', item.color, 'important');
+            } else {
+                b.style.color = "#050a0f";
+                h.style.color = "#1e3c72";
+            }
 
             currentIndex = (currentIndex + 1) % newsItems.length;
         }
 
-        loadZmanim(); loadSheets();
-        setInterval(loadSheets, 60000); // רענון נתונים כל דקה
-        setInterval(showNext, 12000);  // החלפת מודעה כל 12 שניות
+        loadSheets();
+        setInterval(loadSheets, 30000); 
+        setInterval(showNext, 12000);
     </script>
 </body>
 </html>
