@@ -54,9 +54,8 @@
             display: flex; flex-direction: column; padding: 20px; text-align: center;
             border: 6px solid #d4af37; justify-content: center; height: 100%;
         }
-        /* צבע כותרת המודעה המקורי */
-        #msg-header { font-size: 2.5rem; color: #1e3c72; font-weight: 800; margin-bottom: 10px; }
-        #msg-body { font-weight: 800; font-size: 3rem; line-height: 1.2; }
+        #msg-header { font-size: 2.5rem; color: #1e3c72 !important; font-weight: 800; margin-bottom: 10px; }
+        #msg-body { font-weight: 800; font-size: 3rem; line-height: 1.2; color: #050a0f; }
 
         .patron-box {
             flex: 1; background: rgba(212, 175, 55, 0.15); border: 2px solid #d4af37; border-radius: 12px;
@@ -136,7 +135,7 @@
                         if (index === 0) return;
                         let colA = String(row[0] || "").trim();
                         let colB = String(row[1] || "").trim();
-                        let colC = String(row[2] || "").replace(/[^a-zA-Z]/g, "").toLowerCase();
+                        let colC = String(row[2] || "").trim().toLowerCase(); // ניקוי רווחים רגיל
 
                         if (colA.includes("שחרית") || colA.includes("מנחה") || colA.includes("ערבית")) {
                             prayersHtml += `<div class="prayer-item">${colA} ${colB}</div>`;
@@ -153,7 +152,7 @@
                     document.getElementById('patron-week').textContent = patrons.week;
                     document.getElementById('patron-month').textContent = patrons.month;
                     newsItems = tempNews;
-                    if (newsItems.length > 0) showNext();
+                    if (newsItems.length > 0 && currentIndex === 0) showNext();
                 }
             });
         }
@@ -167,14 +166,14 @@
             h.textContent = item.title; 
             b.textContent = item.body;
             
-            // הכותרת תמיד נשארת בצבע המקורי
-            h.style.color = "#1e3c72";
+            // הכותרת תמיד נשארת כחולה
+            h.style.setProperty('color', '#1e3c72', 'important');
 
-            // רק גוף המודעה משתנה לפי הצבע מהאקסל
-            if (item.color && item.color.length > 2) {
+            // גוף ההודעה מקבל את הצבע מהאקסל (כולל pink, red וכו')
+            if (item.color && item.color !== "") {
                 b.style.setProperty('color', item.color, 'important');
             } else {
-                b.style.color = "#050a0f"; // ברירת מחדל שחור
+                b.style.setProperty('color', '#050a0f', 'important');
             }
 
             currentIndex = (currentIndex + 1) % newsItems.length;
