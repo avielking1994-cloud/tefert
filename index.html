@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>לוח מודעות - תפארת עובדיה</title>
-    <script src="https://cdn.jsdelivr.net/npm/hebcal@2.3.5/dist/hebcal.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@hebcal/core@latest/dist/bundle.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap');
         
@@ -22,40 +22,43 @@
         header {
             height: 15%; background: rgba(16, 33, 61, 0.9); padding: 0 20px; 
             display: flex; justify-content: space-between; align-items: center;
-            border: 2px solid #d4af37; border-radius: 15px; margin-bottom: 8px;
+            border: 2px solid #d4af37; border-radius: 15px; margin-bottom: 5px;
         }
 
         .header-right h1 { margin: 0; font-size: 2.2rem; color: #d4af37; font-weight: 800; }
         #date-display { font-size: 1.3rem; color: #ddd; }
         #clock { font-size: 3.5rem; font-weight: 800; }
 
-        main { height: 72%; display: flex; gap: 15px; padding-bottom: 5px; overflow: hidden; }
+        main { height: 72%; display: flex; gap: 10px; padding-bottom: 5px; overflow: hidden; }
         .column { display: flex; flex-direction: column; gap: 8px; height: 100%; }
         #col-right { width: 25%; } #col-center { width: 50%; } #col-left { width: 25%; } 
 
         .section-box { 
             background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(212, 175, 55, 0.5); 
-            border-radius: 12px; padding: 10px; display: flex; flex-direction: column;
+            border-radius: 12px; padding: 8px; display: flex; flex-direction: column;
+            overflow: hidden;
         }
 
         .sidebar-title { 
             font-size: 1.3rem; color: #d4af37; text-align: center; 
-            margin-bottom: 5px; border-bottom: 2px solid #d4af37; font-weight: 800;
-            padding-bottom: 3px;
+            margin-bottom: 3px; border-bottom: 2px solid #d4af37; font-weight: 800;
+            padding-bottom: 2px;
         }
 
+        #prayers-list { flex-shrink: 0; }
+
         .prayer-item { 
-            font-size: 1.15rem; padding: 5px; background: rgba(212, 175, 55, 0.1); 
-            border-radius: 6px; text-align: center; border-right: 4px solid #d4af37; margin-bottom: 5px;
+            font-size: 1.1rem; padding: 3px; background: rgba(212, 175, 55, 0.1); 
+            border-radius: 6px; text-align: center; border-right: 4px solid #d4af37; margin-bottom: 3px;
         }
 
         .zman-item { 
-            display: flex; justify-content: space-between; 
+            display: flex; justify-content: space-between; align-items: center;
             border-bottom: 1px solid rgba(212,175,55,0.2); 
-            padding: 5px 2px; 
+            padding: 4px 2px; line-height: 1;
         }
         .zman-label { color: #d4af37; font-size: 1.05rem; font-weight: 600; }
-        .zman-value { font-weight: 700; font-size: 1.15rem; color: white; }
+        .zman-value { font-weight: 700; font-size: 1.1rem; color: white; }
 
         #message-card {
             background: rgba(255, 255, 255, 0.96); color: #050a0f; border-radius: 20px;
@@ -85,20 +88,20 @@
     <header>
         <div class="header-right">
             <h1>ישיבת תפארת עובדיה</h1>
-            <div id="date-display">טוען תאריך...</div>
+            <div id="date-display">טוען...</div>
         </div>
         <div id="clock">00:00</div>
     </header>
 
     <main>
         <div id="col-right" class="column">
-            <div class="section-box" id="box-prayers">
+            <div class="section-box">
                 <div class="sidebar-title">זמני הישיבה</div>
                 <div id="prayers-list"></div>
             </div>
             <div class="section-box" style="flex-grow: 1;">
-                <div class="sidebar-title">זמני היום - בני ברק</div>
-                <div id="zmanim-list"></div>
+                <div class="sidebar-title">זמני היום</div>
+                <div id="zmanim-list" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;"></div>
             </div>
         </div>
 
@@ -110,9 +113,9 @@
         </div>
 
         <div id="col-left" class="column">
-            <div class="patron-box"><div class="patron-title">פרנס היום</div><div id="patron-day" class="patron-name">טוען...</div></div>
-            <div class="patron-box" style="margin: 5px 0;"><div class="patron-title">פרנס השבוע</div><div id="patron-week" class="patron-name">טוען...</div></div>
-            <div class="patron-box"><div class="patron-title">פרנס החודש</div><div id="patron-month" class="patron-name">טוען...</div></div>
+            <div class="patron-box"><div class="patron-title">פרנס היום</div><div id="patron-day" class="patron-name"></div></div>
+            <div class="patron-box" style="margin: 5px 0;"><div class="patron-title">פרנס השבוע</div><div id="patron-week" class="patron-name"></div></div>
+            <div class="patron-box"><div class="patron-title">פרנס החודש</div><div id="patron-month" class="patron-name"></div></div>
         </div>
     </main>
 
@@ -121,18 +124,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script>
         function updateDateTime() { 
-            try {
-                const now = new Date();
-                document.getElementById('clock').textContent = now.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'}); 
-                let dateStr = now.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
-                
-                if (typeof Hebcal !== 'undefined') {
-                    const hDate = new Hebcal.HDate(now);
-                    dateStr += " | " + hDate.toString('h');
-                }
-                document.getElementById('date-display').textContent = dateStr;
-            } catch (e) { console.error(e); }
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'}); 
+            let dateStr = now.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+            
+            // החזרת התאריך העברי בפורמט הקודם שעבד
+            if (window.hebcal) {
+                const hDate = new window.hebcal.HDate(now);
+                dateStr += " | " + hDate.renderGematriya();
+            }
+            document.getElementById('date-display').textContent = dateStr;
         }
+        setInterval(updateDateTime, 1000); updateDateTime();
 
         async function loadZmanim() {
             try {
@@ -140,14 +143,15 @@
                 const data = await response.json();
                 const t = data.times;
                 
+                // צמצום הרשימה לזמנים הכי חשובים כדי למנוע חיתוך במסך
                 const zList = [
-                    { label: "עלות השחר", val: t.alotHaShachar },
+                    { label: "עלוה"ש", val: t.alotHaShachar },
                     { label: "נץ החמה", val: t.sunrise },
                     { label: "סוזק\"ש גר\"א", val: t.sozks },
-                    { label: "חצות היום", val: t.chatzot },
+                    { label: "חצות", val: t.chatzot },
                     { label: "מנחה גדולה", val: t.minchaGedola },
                     { label: "שקיעה", val: t.sunset },
-                    { label: "צאת הכוכבים", val: t.tzeit708deg || t.tzeit85deg || t.tzeit }
+                    { label: "צאת כוכבים", val: t.tzeit708deg || t.tzeit85deg || t.tzeit }
                 ];
                 
                 let html = "";
@@ -155,9 +159,8 @@
                     if(z.val) html += `<div class="zman-item"><span class="zman-label">${z.label}</span><span class="zman-value">${formatT(z.val)}</span></div>`;
                 });
                 document.getElementById('zmanim-list').innerHTML = html;
-            } catch (e) { console.error("Zmanim error", e); }
+            } catch (e) { }
         }
-        
         function formatT(iso) { 
             if(!iso) return "--:--";
             return new Date(iso).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }); 
@@ -174,12 +177,10 @@
                     const rows = results.data;
                     let prayersHtml = ""; let tempNews = [];
                     let patrons = { day: "נדבת לב", week: "נדבת לב", month: "נדבת לב" };
-                    
                     rows.forEach((row, index) => {
                         if (index === 0) return;
                         let colA = (row[0] || "").trim();
                         let colB = (row[1] || "").trim();
-                        
                         if (colA.includes("שחרית") || colA.includes("מנחה") || colA.includes("ערבית")) {
                             prayersHtml += `<div class="prayer-item">${colA} ${colB}</div>`;
                         } else if (colA.includes("פרנס היום")) { patrons.day = colB; }
@@ -189,13 +190,12 @@
                             tempNews.push({ title: colA, body: colB, color: row[2] }); 
                         }
                     });
-                    
                     document.getElementById('prayers-list').innerHTML = prayersHtml;
-                    document.getElementById('patron-day').textContent = patrons.day || "נדבת לב";
-                    document.getElementById('patron-week').textContent = patrons.week || "נדבת לב";
-                    document.getElementById('patron-month').textContent = patrons.month || "נדבת לב";
+                    document.getElementById('patron-day').textContent = patrons.day;
+                    document.getElementById('patron-week').textContent = patrons.week;
+                    document.getElementById('patron-month').textContent = patrons.month;
                     newsItems = tempNews;
-                    if (newsItems.length > 0) showNext();
+                    if (newsItems.length > 0 && document.getElementById('msg-header').textContent === "") showNext();
                 }
             });
         }
@@ -207,17 +207,11 @@
             const item = newsItems[currentIndex];
             h.textContent = item.title; 
             b.textContent = item.body;
-            b.style.color = (item.color && item.color.trim() !== "") ? item.color : "#050a0f";
+            b.style.color = (item.color && item.color !== "") ? item.color : "#050a0f";
             currentIndex = (currentIndex + 1) % newsItems.length;
         }
 
-        // הפעלה ראשונית
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-        loadZmanim();
-        loadSheets();
-        
-        // רענון אוטומטי
+        loadZmanim(); loadSheets();
         setInterval(loadZmanim, 3600000); 
         setInterval(loadSheets, 30000); 
         setInterval(showNext, 12000);
