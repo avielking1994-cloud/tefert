@@ -22,54 +22,50 @@
         header {
             height: 15%; background: rgba(16, 33, 61, 0.9); padding: 0 20px; 
             display: flex; justify-content: space-between; align-items: center;
-            border: 2px solid #d4af37; border-radius: 15px; margin-bottom: 10px;
+            border: 2px solid #d4af37; border-radius: 15px; margin-bottom: 8px;
         }
 
         .header-right h1 { margin: 0; font-size: 2.2rem; color: #d4af37; font-weight: 800; }
         #date-display { font-size: 1.3rem; color: #ddd; }
         #clock { font-size: 3.5rem; font-weight: 800; }
 
-        main { height: 72%; display: flex; gap: 15px; padding-bottom: 10px; overflow: hidden; }
-        .column { display: flex; flex-direction: column; gap: 10px; height: 100%; }
+        main { height: 72%; display: flex; gap: 15px; padding-bottom: 5px; overflow: hidden; }
+        .column { display: flex; flex-direction: column; gap: 8px; height: 100%; }
         #col-right { width: 25%; } #col-center { width: 50%; } #col-left { width: 25%; } 
 
         .section-box { 
             background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(212, 175, 55, 0.5); 
-            border-radius: 12px; padding: 10px; display: flex; flex-direction: column;
-            min-height: 0;
+            border-radius: 12px; padding: 8px; display: flex; flex-direction: column;
         }
 
         .sidebar-title { 
             font-size: 1.3rem; color: #d4af37; text-align: center; 
-            margin-bottom: 5px; border-bottom: 2px solid #d4af37; font-weight: 800;
-            padding-bottom: 3px;
+            margin-bottom: 4px; border-bottom: 2px solid #d4af37; font-weight: 800;
+            padding-bottom: 2px;
         }
 
-        #prayers-list { overflow-y: auto; flex-grow: 1; }
+        #prayers-list { flex-grow: 0; } /* נותן לרשימה לתפוס רק כמה שהיא צריכה */
+        
         #zmanim-list { 
             display: flex; 
             flex-direction: column; 
-            justify-content: space-between; /* דוחס את הזמנים לגובה הקיים */
-            flex-grow: 1; 
+            flex-grow: 1;
+            justify-content: flex-start; /* מצמיד למעלה */
         }
-
-        #prayers-list::-webkit-scrollbar { display: none; }
 
         .prayer-item { 
-            font-size: 1.15rem; padding: 5px; background: rgba(212, 175, 55, 0.1); 
-            border-radius: 6px; text-align: center; border-right: 4px solid #d4af37; margin-bottom: 5px;
+            font-size: 1.15rem; padding: 4px; background: rgba(212, 175, 55, 0.1); 
+            border-radius: 6px; text-align: center; border-right: 4px solid #d4af37; margin-bottom: 4px;
         }
 
-        /* עיצוב מיוחד לצמצום זמני היום בלבד */
         .zman-item { 
             display: flex; 
             justify-content: space-between; 
             border-bottom: 1px solid rgba(212,175,55,0.2); 
-            padding: 3px 5px; 
-            line-height: 1.1;
+            padding: 5px 5px; 
         }
-        .zman-label { color: #d4af37; font-size: 1rem; font-weight: 600; }
-        .zman-value { font-weight: 700; font-size: 1.1rem; color: white; }
+        .zman-label { color: #d4af37; font-size: 1.15rem; font-weight: 600; }
+        .zman-value { font-weight: 700; font-size: 1.2rem; color: white; }
 
         #message-card {
             background: rgba(255, 255, 255, 0.96); color: #050a0f; border-radius: 20px;
@@ -106,12 +102,10 @@
 
     <main>
         <div id="col-right" class="column">
-            <div class="section-box" style="flex: 5;">
-                <div class="sidebar-title">זמני הישיבה</div>
+            <div class="section-box"> <div class="sidebar-title">זמני הישיבה</div>
                 <div id="prayers-list"></div>
             </div>
-            <div class="section-box" style="flex: 4;">
-                <div class="sidebar-title">זמני היום - בני ברק</div>
+            <div class="section-box" style="flex-grow: 1;"> <div class="sidebar-title">זמני היום - בני ברק</div>
                 <div id="zmanim-list"></div>
             </div>
         </div>
@@ -152,24 +146,29 @@
                 const data = await response.json();
                 const t = data.times;
                 
-                // תיקון למשיכת צאת הכוכבים וזמנים נוספים
-                const tzeit = t.tzeit708deg || t.tzeit85deg || t.tzeit || "--:--";
+                // שליטה מלאה על סדר הזמנים והצגתם
+                const zmanim = [
+                    { label: "עלות השחר", val: t.alotHaShachar },
+                    { label: "נץ החמה", val: t.sunrise },
+                    { label: "סוזק"ש מג"א", val: t.sozksMa },
+                    { label: "סוזק"ש גר"א", val: t.sozks },
+                    { label: "חצות היום", val: t.chatzot },
+                    { label: "שקיעה", val: t.sunset },
+                    { label: "צאת הכוכבים", val: t.tzeit708deg || t.tzeit85deg || t.tzeit }
+                ];
                 
-                document.getElementById('zmanim-list').innerHTML = `
-                    <div class="zman-item"><span class="zman-label">עלות השחר</span><span class="zman-value">${formatT(t.alotHaShachar)}</span></div>
-                    <div class="zman-item"><span class="zman-label">נץ החמה</span><span class="zman-value">${formatT(t.sunrise)}</span></div>
-                    <div class="zman-item"><span class="zman-label">חצות היום</span><span class="zman-value">${formatT(t.chatzot)}</span></div>
-                    <div class="zman-item"><span class="zman-label">מנחה גדולה</span><span class="zman-value">${formatT(t.minchaGedola)}</span></div>
-                    <div class="zman-item"><span class="zman-label">שקיעה</span><span class="zman-value">${formatT(t.sunset)}</span></div>
-                    <div class="zman-item"><span class="zman-label">צאת הכוכבים</span><span class="zman-value">${formatT(tzeit)}</span></div>
-                `;
-            } catch (e) { 
-                console.error("Error loading zmanim", e);
-            }
+                let html = "";
+                zmanim.forEach(z => {
+                    if(z.val) {
+                        html += `<div class="zman-item"><span class="zman-label">${z.label}</span><span class="zman-value">${formatT(z.val)}</span></div>`;
+                    }
+                });
+                document.getElementById('zmanim-list').innerHTML = html;
+            } catch (e) { }
         }
         
         function formatT(iso) { 
-            if(!iso || iso === "--:--") return "--:--";
+            if(!iso) return "--:--";
             return new Date(iso).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }); 
         }
 
@@ -188,14 +187,13 @@
                         if (index === 0) return;
                         let colA = (row[0] || "").trim();
                         let colB = (row[1] || "").trim();
-                        let colC = (row[2] || "").trim();
                         if (colA.includes("שחרית") || colA.includes("מנחה") || colA.includes("ערבית")) {
                             prayersHtml += `<div class="prayer-item">${colA} ${colB}</div>`;
                         } else if (colA.includes("פרנס היום")) { patrons.day = colB; }
                         else if (colA.includes("פרנס השבוע")) { patrons.week = colB; }
                         else if (colA.includes("פרנס החודש")) { patrons.month = colB; }
                         else if (colA !== "" || colB !== "") { 
-                            tempNews.push({ title: colA, body: colB, color: colC }); 
+                            tempNews.push({ title: colA, body: colB, color: row[2] }); 
                         }
                     });
                     document.getElementById('prayers-list').innerHTML = prayersHtml;
